@@ -18,7 +18,7 @@ class Atendimento extends Component {
 
     getRequest() {
         axios
-            .get('http://192.168.246.117:8080/estacionamento/rest/ws/getAtendimentos/')
+            .get('http://localhost:8080/estacionamento/rest/ws/getAtendimentos/')
             .then(res =>
                 this.setState({ atendimentos: res.data, loading: false }),
             );
@@ -39,7 +39,6 @@ class Atendimento extends Component {
             <div>
                 <h1>Atendimento</h1>
                 {this.renderAtendimentos()}
-                <ProgressSpinner/>
             </div>
         );
     }
