@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
+import Header from './Header.js'
+import '../App.css';
+import { classes } from 'istanbul-lib-coverage';
 class Atendimento extends Component {
-
+    
     constructor(props) {
         super(props);
-
         this.state = {
             atendimentos: [],
             loading: true
         };
     }
 
-    UNSAFE_componentWillMount() {
+    componentDidMount() {
         this.getRequest();
     }
 
@@ -20,25 +21,30 @@ class Atendimento extends Component {
         axios
             .get('http://localhost:8080/estacionamento/rest/ws/getAtendimentos/')
             .then(res =>
-                this.setState({ atendimentos: res.data, loading: false }),
+                this.setState({ 
+                    atendimentos: res.data, 
+                    loading: false 
+                }),
             );
     }
 
     renderAtendimentos() {
         console.log('entrou no render atendimentos');
         console.log('this.state.atendimentos', this.state.atendimentos);
-        return this.state.atendimentos.map(valor => (
-            <div>
-                <h3>{valor.cliente.nomeDoCliente}</h3>
-            </div>
+        return this.state.atendimentos.map((valor, i) => (
+            <li key={i}>{valor.valorBase}</li>
         ))
     }
 
     render() {
         return (
             <div>
-                <h1>Atendimento</h1>
-                {this.renderAtendimentos()}
+                <Header/>
+                <div className="body">
+                    <h1>Atendimento</h1>
+                    {this.renderAtendimentos()}
+                </div>
+
             </div>
         );
     }

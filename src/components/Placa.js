@@ -12,15 +12,13 @@ const useStyles = makeStyles(theme => ({
     defaultPlaca: {
         fontSize: '50px',
         color: 'white',
-        width: 300,
-        height: 500
+        width: '100%'
     }
 }));
 
 
 export default function Placa() {
     const classes = useStyles();
-
 
     return (
       <div className={classes.grow}>

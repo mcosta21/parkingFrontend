@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
   },
   menu: {
-    backgroundColor: '#202040',
+    backgroundColor: '#27293d',
     color: '#dbd8e3',
     marginBottom: 20
   },
