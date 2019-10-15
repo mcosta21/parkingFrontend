@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: '20px',
     textAlign: 'center',
     display: 'block',
-    paddingTop: theme.spacing(10),
+    paddingTop: 30,
     '&:hover': {
       marginTop: -4,
       transition: '0.3s',
@@ -97,85 +97,94 @@ export default function Panel() {
           indicatorColor="primary"
           centered>
           <Tab label="Cadastrar" {...changeMenu(0)} />
-          <Tab label="Dashboard" {...changeMenu(1)}/>
+          <Tab label="RELATÓRIOS" {...changeMenu(1)}/>
           <Tab label="Configurações" {...changeMenu(2)}/>
         </Tabs>
       </Paper>
 
       <TabPanel className={classes.padd150} value={value} index={0}>
-          <Container>
-              <Grid 
-                container 
-                direction="row"
-                justify="center"
-                alignItems="center"
-                spacing={2}>
-            
-                <Grid className={classes.option} item xs={6} sm={3}>
-                  <Link to="/atendimento" className={classes.btn}>
-                    <Icon className={classes.icon}>star</Icon>
-                    <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
-                  </Link>
-                </Grid>
-
-                <Grid className={classes.option} item xs={6} sm={3}>
-                  <Link to="/atendimento" className={classes.btn}>
-                    <Icon className={classes.icon}>star</Icon>
-                    <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
-                  </Link>
-                </Grid>
-
-                <Grid className={classes.option} item xs={6} sm={3}>
-                  <Link to="/atendimento" className={classes.btn}>
-                    <Icon className={classes.icon}>star</Icon>
-                    <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
-                  </Link>
-                </Grid>
-
-                <Grid className={classes.option} item xs={6} sm={3}>
-                  <Link to="/atendimento" className={classes.btn}>
-                    <Icon className={classes.icon}>star</Icon>
-                    <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
-                  </Link>
-                </Grid>
-
-                <Grid className={classes.option} item xs={6} sm={3}>
-                  <Link to="/atendimento" className={classes.btn}>
-                    <Icon className={classes.icon}>star</Icon>
-                    <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
-                  </Link>
-                </Grid>
-
-                <Grid className={classes.option} item xs={6} sm={3}>
-                  <Link to="/atendimento" className={classes.btn}>
-                    <Icon className={classes.icon}>star</Icon>
-                    <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
-                  </Link>
-                </Grid>
-
-                <Grid className={classes.option} item xs={6} sm={3}>
-                  <Link to="/atendimento" className={classes.btn}>
-                    <Icon className={classes.icon}>star</Icon>
-                    <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
-                  </Link>
-                </Grid>
-
-                <Grid className={classes.option} item xs={6} sm={3}>
-                  <Link to="/atendimento" className={classes.btn}>
-                    <Icon className={classes.icon}>star</Icon>
-                    <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
-                  </Link>
-                </Grid>
-
+          <Grid 
+            container 
+            direction="row"
+            justify="center"
+            alignItems="center"
+            spacing={2}>
+          
+              <Grid className={classes.option} item xs={6} sm={3}>
+                <Link to="/vagasDisponiveis" className={classes.btn}>
+                  <Icon className={classes.icon}>local_parking</Icon>
+                  <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
+                </Link>
               </Grid>
 
-              <Placa/>
+              <Grid className={classes.option} item xs={6} sm={3}>
+                <Link to="/atendimento" className={classes.btn}>
+                  <Icon className={classes.icon}>face</Icon>
+                  <Paper className={classes.titleBtn}>CLIENTE</Paper>
+                </Link>
+              </Grid>
 
-          </Container>
+              <Grid className={classes.option} item xs={6} sm={3}>
+                <Link to="/atendimento" className={classes.btn}>
+                  <Icon className={classes.icon}>drive_eta</Icon>
+                  <Paper className={classes.titleBtn}>VEÍCULOS</Paper>
+                </Link>
+              </Grid>
+
+              <Grid className={classes.option} item xs={6} sm={3}>
+                <Link to="/vagasDisponiveis" className={classes.btn}>
+                  <Icon className={classes.icon}>filter_1</Icon>
+                  <Paper className={classes.titleBtn}>VAGAS</Paper>
+                </Link>
+              </Grid>
+
+              <Grid className={classes.option} item xs={6} sm={3}>
+                <Link to="/atendimento" className={classes.btn}>
+                  <Icon className={classes.icon}>star</Icon>
+                  <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
+                </Link>
+              </Grid>
+
+              <Grid className={classes.option} item xs={6} sm={3}>
+                <Link to="/atendimento" className={classes.btn}>
+                  <Icon className={classes.icon}>star</Icon>
+                  <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
+                </Link>
+              </Grid>
+
+              <Grid className={classes.option} item xs={6} sm={3}>
+                <Link to="/atendimento" className={classes.btn}>
+                  <Icon className={classes.icon}>star</Icon>
+                  <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
+                </Link>
+              </Grid>
+
+              <Grid className={classes.option} item xs={6} sm={3}>
+                <Link to="/atendimento" className={classes.btn}>
+                  <Icon className={classes.icon}>star</Icon>
+                  <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
+                </Link>
+              </Grid>
+
+          </Grid>
       </TabPanel>
 
       <TabPanel className={classes.padd150} value={value} index={1}>
-        Item Two
+          <Grid 
+            container 
+            direction="row"
+            justify="center"
+            alignItems="center"
+            spacing={2}>
+          
+              <Grid className={classes.option} item xs={6} sm={3}>
+                <Link to="/atendimentos" className={classes.btn}>
+                  <Icon className={classes.icon}>supervised_user_circle</Icon>
+                  <Paper className={classes.titleBtn}>ATENDIMENTOS</Paper>
+                </Link>
+              </Grid>
+
+          </Grid>
       </TabPanel>
 
       <TabPanel className={classes.padd150} value={value} index={2}>

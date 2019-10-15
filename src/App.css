@@ -20,3 +20,54 @@
   margin-bottom: 20px;
   border-radius: 10px !important;
 }
+
+.bread{
+  display: flex;
+  border-bottom: 2px solid #2b3553 !important;
+  margin-bottom: 40px;
+}
+
+.bread div{
+  width: 50%;
+}
+
+.bread div h4{
+  text-align: right;
+}
+
+.listaVagas{
+  display: flex;
+}
+
+.fieldVaga{
+  width: 20%;
+  height: 25vh;
+  background-color: #27293d !important;  
+  color: #dbd8e3;
+  border-radius: 5px !important;
+  padding: 20px;
+  margin: 10px !important;
+  font-size: 27px !important;
+  font-weight: bold;
+  border: none !important
+}
+
+.fieldVaga:hover{
+  margin-top: 0px !Important;
+  color: '#3f51b5' !important;
+  box-shadow: '12px 5px 10px #1e1e2d'
+}
+
+.btn_confirmar{
+    padding: 10px 20px;
+    margin: 20px !important;
+    border-radius: 5px !important;
+    font-weight: bold;
+    color: #dbd8e3 !important
+}
+
+.panel_opcoes{
+  margin-top: 40px;
+  border-top: 2px solid #2b3553;
+}
+

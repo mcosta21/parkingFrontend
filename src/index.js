@@ -5,6 +5,8 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import AtendimentoInput from './components/AtendimentoInput';
+import Atendimentos from './components/Atendimentos';
+import Vagas from './components/Vagas';
 
 ReactDOM.render(
 
@@ -12,6 +14,8 @@ ReactDOM.render(
         <Switch>
             <Route path="/" exact={true} component={App} />
             <Route path="/atendimento" component={AtendimentoInput} />
+            <Route path="/atendimentos" component={Atendimentos} />
+            <Route path="/vagasDisponiveis" component={Vagas} />
         </Switch>
     </ BrowserRouter>
     

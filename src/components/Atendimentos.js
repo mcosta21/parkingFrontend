@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Header from './Header.js'
+import Breadcrumb from './Breadcrumb.js'
 import '../App.css';
 import { classes } from 'istanbul-lib-coverage';
+import {DataTable} from 'primereact/datatable';
+import {Column} from 'primereact/column';
 class Atendimento extends Component {
     
     constructor(props) {
@@ -41,8 +44,13 @@ class Atendimento extends Component {
             <div>
                 <Header/>
                 <div className="body">
-                    <h1>Atendimento</h1>
-                    {this.renderAtendimentos()}
+                    <Breadcrumb title="Atendimentos"/>
+                    <DataTable value={this.state.atendimentos}>
+                        <Column field="idAtendimento" header="ID" />                        
+                        <Column field="cliente.nomeDoCliente" header="Cliente" />
+                        <Column field="valorBase" header="Valor Base" />
+                        <Column field="valorTotal" header="Valor Total" />
+                    </DataTable>
                 </div>
 
             </div>

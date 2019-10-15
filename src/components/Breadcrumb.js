@@ -7,8 +7,12 @@ class Breadcrumb extends Component {
     render() {
         return (
             <div className="bread">
-                <Link to="/">Voltar</Link>
-                <h2>{this.props.title}</h2>
+                <div>
+                    <Link className="title_bread" to="/"><h5>Voltar</h5></Link>
+                </div>
+                <div>
+                    <h4>{this.props.title}</h4>
+                </div>
             </div>
         );
     }
