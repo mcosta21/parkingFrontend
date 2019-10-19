@@ -25,6 +25,7 @@
   display: flex;
   border-bottom: 2px solid #2b3553 !important;
   margin-bottom: 40px;
+  
 }
 
 .bread div{
@@ -33,6 +34,16 @@
 
 .bread div h4{
   text-align: right;
+}
+
+.button_bread{
+  background: transparent !important;
+  border: none !important;
+  margin-top: 16.5px !important;
+  margin-left: -10px !important;
+  font-size: 12.5px !important;
+  font-weight: 600;
+  color: #007ad9 !important
 }
 
 .listaVagas{
@@ -71,3 +82,6 @@
   border-top: 2px solid #2b3553;
 }
 
+#atendimento{
+  display: none;
+}

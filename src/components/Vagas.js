@@ -18,7 +18,7 @@ class Vagas extends Component {
             vagas: [],
             selectedVaga: '',
             loading: true,
-            caminho: '/vagasDisponiveis'
+            caminho: '/vagasDisponiveis',
         };
     }
 
@@ -39,7 +39,7 @@ class Vagas extends Component {
 
     selectVaga(vaga){
         this.setState({selectedVaga: vaga.valor.idVaga, caminho: '/atendimento'});
-        console.log(vaga.valor.idVaga);
+        console.log(this.state.selectedVaga);
     }
 
     renderVagas(){
@@ -48,19 +48,17 @@ class Vagas extends Component {
         ))
     }
 
-
     render() {
         return (
             <div>
-                <Header/>
                 <div className="body">
-                    <Breadcrumb title="Vagas Disponiveis"/>
+                    <Breadcrumb caminho="/" title="Vagas Disponiveis"/>
                     <div className="listaVagas">
                         {this.renderVagas()}
                     </div>
                     <div className="panel_opcoes">    
                         <Link to={this.state.caminho}>
-                            <Button className="btn_confirmar" disabled={!this.state.selectedVaga} label="Confirmar"/>
+                            <Button className="btn_confirmar" label="Confirmar"/>
                         </Link>
                     </div>
                 </div>

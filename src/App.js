@@ -5,7 +5,6 @@ import 'primeicons/primeicons.css';
 import './App.css';
 import Header from './components/Header';
 import Panel from './components/Panel';
-import { Link } from 'react-router-dom'
 
 function App() {
 

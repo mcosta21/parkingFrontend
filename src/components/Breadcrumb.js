@@ -8,7 +8,7 @@ class Breadcrumb extends Component {
         return (
             <div className="bread">
                 <div>
-                    <Link className="title_bread" to="/"><h5>Voltar</h5></Link>
+                    <Link className="title_bread" to={this.props.caminho}><h5>Voltar</h5></Link>
                 </div>
                 <div>
                     <h4>{this.props.title}</h4>

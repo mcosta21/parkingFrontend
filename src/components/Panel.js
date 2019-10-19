@@ -1,46 +1,45 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Placa from './Placa';
 import Icon from '@material-ui/core/Icon';
 import { Link } from 'react-router-dom'
+import {Button} from 'primereact/button';
 
 const useStyles = makeStyles(theme => ({
-  option: {
-    height: '30vh',
-    marginBottom: 20,
-  },
+ 
   btn: {
-    backgroundColor: '#27293d',
+    backgroundColor: '#27293d !important' ,
     width: '100%',
-    height: 'inherit',
+    height: '30vh',
     color: '#dbd8e3',
     borderRadius: 5,    
     fontSize: '20px',
     textAlign: 'center',
+    border: 'none !important',
     display: 'block',
     paddingTop: 30,
     '&:hover': {
-      marginTop: -4,
+      marginTop: -8,
       transition: '0.3s',
-      color: '#3f51b5',
+      color: '#3f51b5 !important',
       boxShadow: '12px 5px 10px #1e1e2d',
     }
   },
   titleBtn: {
     backgroundColor: 'transparent',
-    color: 'inherit',    
+    color: 'inherit', 
+    fontSize: 20,   
     boxShadow: 'none',
     fontWeight: '400'
   },
   icon: {
     fontSize: 70,
+    marginTop: -40,
     marginBottom: 15
   },
   tabs: {
@@ -49,8 +48,8 @@ const useStyles = makeStyles(theme => ({
     color: '#dbd8e3',
   },
   padd150: {
-    paddingRight: theme.spacing(10),
-    paddingLeft: theme.spacing(10),
+    paddingRight: theme.spacing(30),
+    paddingLeft: theme.spacing(30),
   }
 }));
 
@@ -88,7 +87,7 @@ export default function Panel() {
     };
   
     return (
-      <div className={classes.grow}>
+      <div>
           
       <Paper className={classes.tabs}>
         <Tabs
@@ -110,61 +109,78 @@ export default function Panel() {
             alignItems="center"
             spacing={2}>
           
-              <Grid className={classes.option} item xs={6} sm={3}>
-                <Link to="/vagasDisponiveis" className={classes.btn}>
-                  <Icon className={classes.icon}>local_parking</Icon>
-                  <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
-                </Link>
+              <Grid item xs={6} sm={3}>
+                  <Link to="/atendimento">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>local_parking</Icon>
+                      <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
+                    </Button>
+                  </Link>               
               </Grid>
 
-              <Grid className={classes.option} item xs={6} sm={3}>
-                <Link to="/atendimento" className={classes.btn}>
-                  <Icon className={classes.icon}>face</Icon>
-                  <Paper className={classes.titleBtn}>CLIENTE</Paper>
-                </Link>
+              <Grid item xs={6} sm={3}>
+                  <Link to="/atendimento">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>face</Icon>
+                      <Paper className={classes.titleBtn}>CLIENTE</Paper>
+                    </Button>
+                  </Link>               
               </Grid>
 
-              <Grid className={classes.option} item xs={6} sm={3}>
-                <Link to="/atendimento" className={classes.btn}>
-                  <Icon className={classes.icon}>drive_eta</Icon>
-                  <Paper className={classes.titleBtn}>VEÍCULOS</Paper>
-                </Link>
+              <Grid item xs={6} sm={3}>
+                  <Link to="/atendimento">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>drive_eta</Icon>
+                      <Paper className={classes.titleBtn}>VEÍCULOS</Paper>
+                    </Button>
+                  </Link>               
               </Grid>
 
-              <Grid className={classes.option} item xs={6} sm={3}>
-                <Link to="/vagasDisponiveis" className={classes.btn}>
-                  <Icon className={classes.icon}>filter_1</Icon>
-                  <Paper className={classes.titleBtn}>VAGAS</Paper>
-                </Link>
+              <Grid item xs={6} sm={3}>
+                  <Link to="/vagasDisponiveis">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>filter_1</Icon>
+                      <Paper className={classes.titleBtn}>VAGAS</Paper>
+                    </Button>
+                  </Link>               
               </Grid>
 
-              <Grid className={classes.option} item xs={6} sm={3}>
-                <Link to="/atendimento" className={classes.btn}>
-                  <Icon className={classes.icon}>star</Icon>
-                  <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
-                </Link>
+              <Grid item xs={6} sm={3}>
+                  <Link to="/vagasDisponiveis">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>filter_1</Icon>
+                      <Paper className={classes.titleBtn}>VAGAS</Paper>
+                    </Button>
+                  </Link>               
               </Grid>
 
-              <Grid className={classes.option} item xs={6} sm={3}>
-                <Link to="/atendimento" className={classes.btn}>
-                  <Icon className={classes.icon}>star</Icon>
-                  <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
-                </Link>
+              <Grid item xs={6} sm={3}>
+                  <Link to="/vagasDisponiveis">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>filter_1</Icon>
+                      <Paper className={classes.titleBtn}>VAGAS</Paper>
+                    </Button>
+                  </Link>               
               </Grid>
 
-              <Grid className={classes.option} item xs={6} sm={3}>
-                <Link to="/atendimento" className={classes.btn}>
-                  <Icon className={classes.icon}>star</Icon>
-                  <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
-                </Link>
+              <Grid item xs={6} sm={3}>
+                  <Link to="/vagasDisponiveis">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>filter_1</Icon>
+                      <Paper className={classes.titleBtn}>VAGAS</Paper>
+                    </Button>
+                  </Link>               
               </Grid>
 
-              <Grid className={classes.option} item xs={6} sm={3}>
-                <Link to="/atendimento" className={classes.btn}>
-                  <Icon className={classes.icon}>star</Icon>
-                  <Paper className={classes.titleBtn}>ATENDIMENTO</Paper>
-                </Link>
+              <Grid item xs={6} sm={3}>
+                  <Link to="/vagasDisponiveis">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>filter_1</Icon>
+                      <Paper className={classes.titleBtn}>VAGAS</Paper>
+                    </Button>
+                  </Link>               
               </Grid>
+              
 
           </Grid>
       </TabPanel>
@@ -177,11 +193,13 @@ export default function Panel() {
             alignItems="center"
             spacing={2}>
           
-              <Grid className={classes.option} item xs={6} sm={3}>
-                <Link to="/atendimentos" className={classes.btn}>
-                  <Icon className={classes.icon}>supervised_user_circle</Icon>
-                  <Paper className={classes.titleBtn}>ATENDIMENTOS</Paper>
-                </Link>
+              <Grid item xs={6} sm={3}>
+                  <Link to="/atendimentos">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>supervised_user_circle</Icon>
+                      <Paper className={classes.titleBtn}>ATENDIMENTOS</Paper>
+                    </Button>
+                  </Link>               
               </Grid>
 
           </Grid>

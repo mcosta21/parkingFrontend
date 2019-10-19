@@ -3,7 +3,6 @@ import axios from 'axios';
 import Header from './Header.js'
 import Breadcrumb from './Breadcrumb.js'
 import '../App.css';
-import { classes } from 'istanbul-lib-coverage';
 import {DataTable} from 'primereact/datatable';
 import {Column} from 'primereact/column';
 class Atendimento extends Component {
