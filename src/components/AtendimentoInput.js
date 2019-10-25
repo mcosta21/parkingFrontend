@@ -9,6 +9,7 @@ import {Dialog} from 'primereact/dialog';
 import {DataTable} from 'primereact/datatable';
 import {Column} from 'primereact/column';
 import { Link, useHistory } from 'react-router-dom'
+import { async } from 'q';
 
 class AtendimentoInput extends Component {
     
@@ -26,7 +27,11 @@ class AtendimentoInput extends Component {
             vagas: [],
             selectedVaga: '',
             valorTotal: '0',
-            caminho: '/vagasDisponiveis'            
+            caminho: '/vagasDisponiveis',
+            veiculos: [],
+            veiculo: '',
+            selectedVeiculo: '',
+            visibleVeiculos: false
         };    
     }
 
@@ -42,6 +47,17 @@ class AtendimentoInput extends Component {
             .then(res =>
                 this.setState({ 
                     clientes: res.data, 
+                    loading: false 
+                }),
+            );
+    }
+
+    getRequestVeiculosDoCliente() {
+        axios
+            .get('http://localhost:8080/estacionamento/rest/ws/getVeiculosDoCliente/')
+            .then(res =>
+                this.setState({ 
+                    veiculos: res.data, 
                     loading: false 
                 }),
             );
@@ -66,19 +82,21 @@ class AtendimentoInput extends Component {
             "valorBase": this.state.selectedVaga.valorBase,
             "valorTotal": this.state.valorTotal
         })
-        .then(response => {
+        .then(response => {     
             console.log(response);
-            this.setState=({cliente: '', vagas: [], selectedCliente: '', selectedVaga: '', valorTotal: '0'});
-            alert("Atendimento cadastrado com sucesso");
-            this.setRequestAlterarStatusVaga('2');
-            displayVagas();
-        })
+            this.setState=({cliente: '', vagas: [], selectedCliente: '', selectedVaga: '', valorTotal: '0'})
+            
+            this.setRequestAlterarStatusVaga('2')  
+                    
+        })       
         .catch(error => {
             console.log(error.response)
             alert(error.response);
         })
-
-        
+        .finally(()=>{
+            alert("Atendimento cadastrado com sucesso")
+            window.location = '/'
+        })   
     }
 
     setRequestAlterarStatusVaga(status){
@@ -108,6 +126,10 @@ class AtendimentoInput extends Component {
         this.setState({cliente: this.state.selectedCliente, visibleClientes: false});  
     }
 
+    confirmarSelectedVeiculo(){
+        this.setState({veiculo: this.state.selectedVeiculo, visibleVeiculos: false});  
+    }
+
     renderAtendimentos() {
         console.log('entrou no render atendimentos');
         console.log('this.state.atendimentos', this.state.atendimentos);
@@ -117,7 +139,7 @@ class AtendimentoInput extends Component {
     }
 
     _handleDoubleClickItem(event){
-        this.setState({visibleClientes: true});
+        this.setState({visibleClientes: true, visibleVeiculos: true});
     }
 
     onHide() {
@@ -190,6 +212,29 @@ class AtendimentoInput extends Component {
                         <Button label="Cancelar" onClick={() => this.setState({visibleClientes: false})}/>
                 </Dialog>
 
+                <h3>Veículo</h3>
+                <InputText 
+                    value={this.state.veiculo.numeroDaPlaca || ''} 
+                    className="input"
+                    onChange={(e) => this.setState({numeroDaPlaca: e.target.value})}
+                    onDoubleClick={this._handleDoubleClickItem}/>
+                    
+                <Dialog 
+                    header="Veiculos" 
+                    visible={this.state.visibleVeiculos} 
+                    modal={true} 
+                    onHide={() => this.setState({visibleVeiculos: false})}>
+                        <DataTable 
+                            value={this.state.veiculos}
+                            selectionMode="single"
+                            selection={this.state.selectedVeiculo} 
+                            onSelectionChange={e => this.setState({selectedVeiculo: e.value})}>
+                            <Column field="numeroDaPlaca" header="ID" />
+                        </DataTable>
+                        <Button label="Confirmar" onClick={() => this.confirmarSelectedVeiculo()}/>
+                        <Button label="Cancelar" onClick={() => this.setState({visibleVeiculos: false})}/>
+                </Dialog>
+
                 <h3>Valor Base</h3>
                 <InputText 
                     value={this.state.selectedVaga.valorBase || ''} 
@@ -201,7 +246,7 @@ class AtendimentoInput extends Component {
                     value={this.state.valorTotal} 
                     className="input"
                     onChange={(e) => this.setState({valorTotal: e.target.value})}/>
-                <Button label="Click" to="/" onClick={this.setRequest.bind(this)} />
+                <Button label="Click" onClick={this.setRequest.bind(this)} />
             </div>
         )
     }
