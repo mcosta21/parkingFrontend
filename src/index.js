@@ -7,6 +7,8 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import AtendimentoInput from './components/AtendimentoInput';
 import Atendimentos from './components/Atendimentos';
 import Vagas from './components/Vagas';
+import ClienteInput from './components/ClienteInput';
+import ListaClientes from './components/ListaClientes';
 
 ReactDOM.render(
 
@@ -16,6 +18,8 @@ ReactDOM.render(
             <Route path="/atendimento" component={AtendimentoInput} />
             <Route path="/atendimentos" component={Atendimentos} />
             <Route path="/vagasDisponiveis" component={Vagas} />
+            <Route path="/CadastroCliente" component={ClienteInput} />
+            <Route path="/listaClientes" component={ListaClientes} />
         </Switch>
     </ BrowserRouter>
     

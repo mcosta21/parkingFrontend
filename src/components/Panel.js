@@ -119,7 +119,7 @@ export default function Panel() {
               </Grid>
 
               <Grid item xs={6} sm={3}>
-                  <Link to="/atendimento">
+                  <Link to="/cadastroCliente">
                     <Button className={classes.btn} label={" "}>
                       <Icon className={classes.icon}>face</Icon>
                       <Paper className={classes.titleBtn}>CLIENTE</Paper>
@@ -198,6 +198,15 @@ export default function Panel() {
                     <Button className={classes.btn} label={" "}>
                       <Icon className={classes.icon}>supervised_user_circle</Icon>
                       <Paper className={classes.titleBtn}>ATENDIMENTOS</Paper>
+                    </Button>
+                  </Link>               
+              </Grid>
+
+              <Grid item xs={6} sm={3}>
+                  <Link to="/listaClientes">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>face</Icon>
+                      <Paper className={classes.titleBtn}>CLIENTES</Paper>
                     </Button>
                   </Link>               
               </Grid>
