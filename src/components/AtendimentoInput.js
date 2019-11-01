@@ -34,7 +34,7 @@ class AtendimentoInput extends Component {
             tipoAtendimentoSelecionado: '',
             tiposAtendimentos: [],
             desconto: '',
-            funcioanario: ''
+            funcionario: ''
         };    
     }
 
