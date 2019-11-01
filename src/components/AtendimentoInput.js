@@ -8,8 +8,7 @@ import {InputText} from 'primereact/inputtext';
 import {Dialog} from 'primereact/dialog';
 import {DataTable} from 'primereact/datatable';
 import {Column} from 'primereact/column';
-import { Link, useHistory } from 'react-router-dom'
-import { async } from 'q';
+import {Dropdown} from 'primereact/dropdown';
 
 class AtendimentoInput extends Component {
     
@@ -31,7 +30,11 @@ class AtendimentoInput extends Component {
             veiculos: [],
             veiculo: '',
             selectedVeiculo: '',
-            visibleVeiculos: false
+            visibleVeiculos: false,
+            tipoAtendimentoSelecionado: '',
+            tiposAtendimentos: [],
+            desconto: '',
+            funcioanario: ''
         };    
     }
 
@@ -39,6 +42,10 @@ class AtendimentoInput extends Component {
         this.getRequestClientes();
         this.getRequestAtendimentos();
         this.getRequestVagas();
+        this.getRequestTiposAtendimentos()
+    }
+
+    UNSAFE_componentWillMount(){
     }
 
     getRequestClientes() {
@@ -54,10 +61,21 @@ class AtendimentoInput extends Component {
 
     getRequestVeiculosDoCliente() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getVeiculosDoCliente/')
+            .get('http://localhost:8080/estacionamento/rest/ws/getVeiculosDoCliente/' + this.state.selectedCliente.idCliente)
             .then(res =>
                 this.setState({ 
                     veiculos: res.data, 
+                    loading: false 
+                }),
+            );
+    }
+
+    getRequestTiposAtendimentos() {
+        axios
+            .get('http://localhost:8080/estacionamento/rest/ws/getTipoDeAtendimentos/')
+            .then(res =>
+                this.setState({ 
+                    tiposAtendimentos: res.data, 
                     loading: false 
                 }),
             );
@@ -84,10 +102,8 @@ class AtendimentoInput extends Component {
         })
         .then(response => {     
             console.log(response);
-            this.setState=({cliente: '', vagas: [], selectedCliente: '', selectedVaga: '', valorTotal: '0'})
-            
-            this.setRequestAlterarStatusVaga('2')  
-                    
+            this.setState=({cliente: '', vagas: [], selectedCliente: '', selectedVaga: '', valorTotal: '0'})            
+            this.setRequestAlterarStatusVaga('2')                      
         })       
         .catch(error => {
             console.log(error.response)
@@ -123,7 +139,11 @@ class AtendimentoInput extends Component {
     }
 
     confirmarSelectedCliente(){
-        this.setState({cliente: this.state.selectedCliente, visibleClientes: false});  
+        this.setState({
+                        cliente: this.state.selectedCliente, 
+                        visibleClientes: false, 
+                        veiculos: this.getRequestVeiculosDoCliente()
+                    });  
     }
 
     confirmarSelectedVeiculo(){
@@ -131,16 +151,20 @@ class AtendimentoInput extends Component {
     }
 
     renderAtendimentos() {
-        console.log('entrou no render atendimentos');
-        console.log('this.state.atendimentos', this.state.atendimentos);
         return this.state.atendimentos.map((valor, i) => (
             <li key={i}>{valor.idAtendimento}</li>
         ))
     }
 
-    _handleDoubleClickItem(event){
-        this.setState({visibleClientes: true, visibleVeiculos: true});
+    getTiposDeAtendimentos() {
+        return this.state.tiposAtendimentos.map((valor) => (
+            {name: valor.nomeDoTipoAtendimento, code: valor.nomeDoTipoAtendimento}
+        ))
     }
+
+    _handleDoubleClickItem(event){
+    }
+   
 
     onHide() {
         this.setState({visibleClientes: false});
@@ -170,6 +194,7 @@ class AtendimentoInput extends Component {
     }
 
     renderInput(){
+        const tipos = this.getTiposDeAtendimentos();
         return (
             <div id="atendimento" className="body">
                 
@@ -193,7 +218,7 @@ class AtendimentoInput extends Component {
                     value={this.state.cliente.nomeDoCliente || ''} 
                     className="input"
                     onChange={(e) => this.setState({nomeDoCliente: e.target.value})}
-                    onDoubleClick={this._handleDoubleClickItem}/>
+                    onDoubleClick={()=>this.setState({visibleClientes: true})}/>
                     
                 <Dialog 
                     header="Clientes" 
@@ -217,7 +242,7 @@ class AtendimentoInput extends Component {
                     value={this.state.veiculo.numeroDaPlaca || ''} 
                     className="input"
                     onChange={(e) => this.setState({numeroDaPlaca: e.target.value})}
-                    onDoubleClick={this._handleDoubleClickItem}/>
+                    onDoubleClick={()=>{this.setState({visibleVeiculos: true})}}/>
                     
                 <Dialog 
                     header="Veiculos" 
@@ -235,6 +260,12 @@ class AtendimentoInput extends Component {
                         <Button label="Cancelar" onClick={() => this.setState({visibleVeiculos: false})}/>
                 </Dialog>
 
+                <h3>Tipo de Atendimento</h3>
+                <Dropdown optionLabel="name" 
+                            value={this.state.tipoAtendimentoSelecionado}
+                            options={tipos} 
+                            onChange={(e) => {this.setState({tipoAtendimentoSelecionado: e.value})}} placeholder=""/>
+               
                 <h3>Valor Base</h3>
                 <InputText 
                     value={this.state.selectedVaga.valorBase || ''} 
@@ -246,7 +277,21 @@ class AtendimentoInput extends Component {
                     value={this.state.valorTotal} 
                     className="input"
                     onChange={(e) => this.setState({valorTotal: e.target.value})}/>
+                
+                <h3>Desconto</h3>
+                <InputText 
+                    value={this.state.desconto || ''} 
+                    className="input"
+                    onChange={(e) => this.setState({desconto: e.target.value})}/>
+                
+                <h3>Funcionário</h3>
+                <InputText 
+                    value={this.state.funcionario || ''} 
+                    className="input"
+                    onChange={(e) => this.setState({funcionario: e.target.value})}/>
+                
                 <Button label="Click" onClick={this.setRequest.bind(this)} />
+                                
             </div>
         )
     }
