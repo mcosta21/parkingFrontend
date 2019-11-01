@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Header from './Header.js'
 import Breadcrumb from './Breadcrumb.js'
 import '../App.css';
-import { classes } from 'istanbul-lib-coverage';
-import {DataTable} from 'primereact/datatable';
-import {Column} from 'primereact/column';
 import {Button} from 'primereact/button';
 import { Link } from 'react-router-dom'
-import AtendimentoInput from './AtendimentoInput.js'
 
 class Vagas extends Component {
     
