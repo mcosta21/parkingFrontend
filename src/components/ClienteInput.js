@@ -27,15 +27,30 @@ class ClienteInput extends Component {
             municipio: [],
             uf: [],
             ufSelecionada: '',
-            ufTeste: []
+            tiposAtendimentos: [],
         };
     }
 
     componentDidMount() {
-        this.getUf();
-        this.setState({
-            ufTeste: this.mapUfToDropdown()
-        })
+        this.getUf();         
+        this.getRequestTiposAtendimentos()    
+    }
+
+    getRequestTiposAtendimentos() {
+        axios
+            .get('http://localhost:8080/estacionamento/rest/ws/getTipoDeAtendimentos/')
+            .then(res =>
+                this.setState({ 
+                    tiposAtendimentos: res.data, 
+                    loading: false 
+                }),
+            );
+    }
+
+    getTiposDeAtendimentos() {
+        return this.state.tiposAtendimentos.map((valor) => (
+            {name: valor.nomeDoTipoAtendimento, code: valor.nomeDoTipoAtendimento}
+        ))
     }
 
     getUf() {
@@ -91,6 +106,9 @@ class ClienteInput extends Component {
     }
     
     renderInput(){
+        
+        const tipos = this.getTiposDeAtendimentos();
+
         const sexo = [
             { label: 'Feminino', value: 'FEMININO' },
             { label: 'Masculino', value: 'MASCULINO' }
@@ -111,7 +129,6 @@ class ClienteInput extends Component {
         const ufDropdown = this.mapUfToDropdown();
 
         return (
-            <div>
                 <div className="body">                
                     <Breadcrumb caminho="/" title="Cliente" />
 
@@ -162,25 +179,17 @@ class ClienteInput extends Component {
                             options={situacao} 
                             onChange={(e) => { this.setState({ situacaoCliete: e.target.value }) }} placeholder="Selecione a Situação do Cliente" />
                     
-                    <h3>Unidade Federativa</h3>                
-                    <Dropdown value={this.state.ufSelecionada} 
-                            options={ufDropdown} 
-                            onChange={(e) => { this.setState({ ufSelecionada: e.target.value }) }} placeholder="Selecione a Unidade Federativa" />
+                    <h3>Unidade Federativa</h3>     
+                    <Dropdown optionLabel="uf" 
+                            value={this.state.ufSelecionada}
+                            options={tipos} 
+                            onChange={(e) => {this.setState({ufSelecionada: e.value})}} placeholder="Selecione o Tipo de Atendimento"/>
                     
-                    <h3>Município</h3>                
-                    <Dropdown value={this.state.municipio} 
-                            options={this.state.municipio} 
-                            onChange={(e) => { this.setState({ municipio: e.target.value }) }} placeholder="Selecione o Município" />
-                    
-                    <h3>Bairro</h3>                
-                    <Dropdown value={this.state.bairro} 
-                            options={this.state.bairro} 
-                            onChange={(e) => { this.setState({ bairro: e.target.value }) }} placeholder="Selecione o Bairro" />
-                    
+                   
                     <br/>
                     <Button label="Cadastrar" icon="pi pi-check" iconPos="right" onClick={this.onNovoClienteClick} />
+                    <Button label="teste" icon="pi pi-check" iconPos="right" onClick={()=>{console.log(this.state.uf)}} />
                 </div>
-            </div>
         );
     }
 

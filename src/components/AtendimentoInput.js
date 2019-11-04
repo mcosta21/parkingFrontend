@@ -264,7 +264,7 @@ class AtendimentoInput extends Component {
                 <Dropdown optionLabel="name" 
                             value={this.state.tipoAtendimentoSelecionado}
                             options={tipos} 
-                            onChange={(e) => {this.setState({tipoAtendimentoSelecionado: e.value})}} placeholder=""/>
+                            onChange={(e) => {this.setState({tipoAtendimentoSelecionado: e.value})}} placeholder="Selecione o Tipo de Atendimento"/>
                
                 <h3>Valor Base</h3>
                 <InputText 
