@@ -119,7 +119,7 @@ export default function Panel() {
               </Grid>
 
               <Grid item xs={6} sm={3}>
-                  <Link to="/cadastroCliente">
+                  <Link to="/cliente">
                     <Button className={classes.btn} label={" "}>
                       <Icon className={classes.icon}>face</Icon>
                       <Paper className={classes.titleBtn}>CLIENTE</Paper>

@@ -34,7 +34,8 @@ class AtendimentoInput extends Component {
             tipoAtendimentoSelecionado: '',
             tiposAtendimentos: [],
             desconto: '',
-            funcionario: ''
+            funcionario: '',
+            ufs: []
         };    
     }
 
@@ -43,6 +44,7 @@ class AtendimentoInput extends Component {
         this.getRequestAtendimentos();
         this.getRequestVagas();
         this.getRequestTiposAtendimentos()
+        this.getRequestUfs()
     }
 
     UNSAFE_componentWillMount(){
@@ -79,6 +81,12 @@ class AtendimentoInput extends Component {
                     loading: false 
                 }),
             );
+    }
+
+    getTiposDeAtendimentos() {
+        return this.state.tiposAtendimentos.map((valor) => (
+            {name: valor.nomeDoTipoAtendimento, code: valor.nomeDoTipoAtendimento}
+        ))
     }
 
     getRequestAtendimentos(){    
@@ -156,9 +164,20 @@ class AtendimentoInput extends Component {
         ))
     }
 
-    getTiposDeAtendimentos() {
-        return this.state.tiposAtendimentos.map((valor) => (
-            {name: valor.nomeDoTipoAtendimento, code: valor.nomeDoTipoAtendimento}
+    getRequestUfs() {
+        axios
+            .get('http://localhost:8080/estacionamento/rest/ws/getUfs/')
+            .then(res =>
+                this.setState({ 
+                    ufs: res.data, 
+                    loading: false 
+                }),
+            );
+    }
+
+    getUfs() {
+        return this.state.ufs.map((valor) => (
+            {name: valor.nomeDaUf, code: valor.nomeDaUf}
         ))
     }
 
@@ -195,6 +214,7 @@ class AtendimentoInput extends Component {
 
     renderInput(){
         const tipos = this.getTiposDeAtendimentos();
+        const ufs = this.getUfs();
         return (
             <div id="atendimento" className="body">
                 
@@ -263,7 +283,7 @@ class AtendimentoInput extends Component {
                 <h3>Tipo de Atendimento</h3>
                 <Dropdown optionLabel="name" 
                             value={this.state.tipoAtendimentoSelecionado}
-                            options={tipos} 
+                            options={ufs} 
                             onChange={(e) => {this.setState({tipoAtendimentoSelecionado: e.value})}} placeholder="Selecione o Tipo de Atendimento"/>
                
                 <h3>Valor Base</h3>
