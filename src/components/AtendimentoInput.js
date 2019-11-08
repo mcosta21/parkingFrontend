@@ -9,6 +9,7 @@ import {Dialog} from 'primereact/dialog';
 import {DataTable} from 'primereact/datatable';
 import {Column} from 'primereact/column';
 import {Dropdown} from 'primereact/dropdown';
+import { InputMask } from 'primereact/inputmask';
 
 class AtendimentoInput extends Component {
     
@@ -25,7 +26,7 @@ class AtendimentoInput extends Component {
             selectedCliente: '',
             vagas: [],
             selectedVaga: '',
-            valorTotal: '0',
+            valorTotal: 0,
             caminho: '/vagasDisponiveis',
             veiculos: [],
             veiculo: '',
@@ -33,21 +34,25 @@ class AtendimentoInput extends Component {
             visibleVeiculos: false,
             tipoAtendimentoSelecionado: '',
             tiposAtendimentos: [],
-            desconto: '',
+            desconto: 0,
             funcionario: '',
-            ufs: []
+            funcionarios: [],
+            dataEntrada: '',
+            dataSaida: '',
+            porcentagem: 0
         };    
     }
 
     componentDidMount() {
-        this.getRequestClientes();
-        this.getRequestAtendimentos();
-        this.getRequestVagas();
+        this.getRequestClientes()
+        this.getRequestAtendimentos()
+        this.getRequestVagas()
         this.getRequestTiposAtendimentos()
-        this.getRequestUfs()
-    }
-
-    UNSAFE_componentWillMount(){
+        this.getRequestFuncionarios()
+        let data = new Date().toLocaleString();
+        this.setState({
+            dataEntrada: data
+        })
     }
 
     getRequestClientes() {
@@ -63,13 +68,19 @@ class AtendimentoInput extends Component {
 
     getRequestVeiculosDoCliente() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getVeiculosDoCliente/' + this.state.selectedCliente.idCliente)
+            .get('http://localhost:8080/estacionamento/rest/ws/getVeiculosDoCliente/' + this.state.cliente.idCliente)
             .then(res =>
                 this.setState({ 
                     veiculos: res.data, 
                     loading: false 
                 }),
             );
+    }
+
+    getVeiculos() {
+        return this.state.veiculos.map((valor) => (
+            {name: valor.numeroDaPlaca + ' / ' + valor.corDoCarro, code: valor.idVeiculo}
+        ))
     }
 
     getRequestTiposAtendimentos() {
@@ -85,8 +96,15 @@ class AtendimentoInput extends Component {
 
     getTiposDeAtendimentos() {
         return this.state.tiposAtendimentos.map((valor) => (
-            {name: valor.nomeDoTipoAtendimento, code: valor.nomeDoTipoAtendimento}
+            {name: valor.nomeDoTipoAtendimento, code: valor.idTipoAtendimento, porcentagem: valor.porcentagemDesconto}
         ))
+    }
+
+    onDescontoChange(e){
+        this.setState({
+            tipoAtendimentoSelecionado: e.value,
+            desconto: this.state.valorTotal * (Number.parseInt(e.value.porcentagem) / 100)
+        });
     }
 
     getRequestAtendimentos(){    
@@ -98,15 +116,60 @@ class AtendimentoInput extends Component {
                 loading: false 
             }),
         );
-    }   
+    }
+    
+    getRequestFuncionarios() {
+        axios
+            .get('http://localhost:8080/estacionamento/rest/ws/getFuncionarios/')
+            .then(res =>
+                this.setState({ 
+                    funcionarios: res.data, 
+                    loading: false 
+                }),
+            );
+    }
+
+    getFuncionarios() {
+        return this.state.funcionarios.map((valor) => (
+            {name: valor.nomeDoFuncionario, code: valor.idFuncionario}
+        ))
+    }
+
+    getHorasAtendimento(){
+        if(this.state.dataSaida === ''){
+            return 0
+        }
+        let dtSaida = new Date(this.state.dataSaida)
+        let dtEntrada = new Date(this.state.dataEntrada)
+        let diffMs = (dtSaida - dtEntrada);
+        let diffHrs = Math.floor((diffMs % 86400000) / 3600000);
+        let diffMins = Math.round(((diffMs) % 86400000 % 3600000) / 60000);
+        let diff = diffHrs + 'h ' + diffMins + 'm';
+        return diff
+    }
+
+    getValorTotal(){
+        if(this.state.dataSaida === ''){
+            return 0
+        }
+        let dtSaida = new Date(this.state.dataSaida)
+        let dtEntrada = new Date(this.state.dataEntrada)
+        let diffMs = (dtSaida - dtEntrada);
+        let diffHrs = Math.floor((diffMs % 86400000) / 3600000);
+        let valor = this.state.selectedVaga.valorBase * diffHrs - this.state.desconto;
+        this.setState({
+            valorTotal: valor
+        })
+    }
    
     setRequest(){
         axios.post('http://localhost:8080/estacionamento/rest/ws/createAtendimento',
         {
-            "cliente": this.state.selectedCliente.idCliente,
+            "cliente": this.state.cliente.idCliente,
             "vaga": this.state.selectedVaga.idVaga,
             "valorBase": this.state.selectedVaga.valorBase,
-            "valorTotal": this.state.valorTotal
+            "valorTotal": this.state.valorTotal,
+            "funcionario": this.state.funcionario
         })
         .then(response => {     
             console.log(response);
@@ -138,6 +201,10 @@ class AtendimentoInput extends Component {
         })
     }
 
+    getStatusAtendimento(){
+        return (this.state.dataSaida === '' ? 'Aberto' : 'Fechado')
+    }
+
     renderClientes() {
         console.log('entrou no render clientes');
         console.log('this.state.clientes', this.state.clientes);
@@ -146,16 +213,24 @@ class AtendimentoInput extends Component {
         ))
     }
 
-    confirmarSelectedCliente(){
-        this.setState({
-                        cliente: this.state.selectedCliente, 
-                        visibleClientes: false, 
-                        veiculos: this.getRequestVeiculosDoCliente()
-                    });  
+    async confirmarSelectedCliente(){
+        let promise = new Promise((resolve) => {
+            resolve(
+                this.setState({
+                    cliente: this.state.selectedCliente, 
+                    visibleClientes: false
+                })
+            )
+        });        
+        let result = await promise;
+        this.getRequestVeiculosDoCliente()
     }
 
-    confirmarSelectedVeiculo(){
-        this.setState({veiculo: this.state.selectedVeiculo, visibleVeiculos: false});  
+    confirmarSelectedFuncionario(){
+        this.setState({
+                        funcionario: this.state.selectedFuncionario, 
+                        visibleFuncionarios: false
+                    });  
     }
 
     renderAtendimentos() {
@@ -164,26 +239,8 @@ class AtendimentoInput extends Component {
         ))
     }
 
-    getRequestUfs() {
-        axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getUfs/')
-            .then(res =>
-                this.setState({ 
-                    ufs: res.data, 
-                    loading: false 
-                }),
-            );
-    }
-
-    getUfs() {
-        return this.state.ufs.map((valor) => (
-            {name: valor.nomeDaUf, code: valor.nomeDaUf}
-        ))
-    }
-
     _handleDoubleClickItem(event){
     }
-   
 
     onHide() {
         this.setState({visibleClientes: false});
@@ -214,7 +271,7 @@ class AtendimentoInput extends Component {
 
     renderInput(){
         const tipos = this.getTiposDeAtendimentos();
-        const ufs = this.getUfs();
+        const funcionarios = this.getFuncionarios();
         return (
             <div id="atendimento" className="body">
                 
@@ -227,16 +284,24 @@ class AtendimentoInput extends Component {
                     </div>
                 </div>
 
+                <h3>Status</h3>
+                <InputText 
+                    value={this.getStatusAtendimento()} 
+                    className="input"
+                    readOnly/>
+
                 <h3>Vaga</h3>
                 <InputText 
                     value={this.state.selectedVaga.nomeDaVaga || ''} 
                     className="input"
+                    readOnly
                     onChange={(e) => this.setState({nomeDaVaga: e.target.value})}/>
 
                 <h3>Cliente</h3>
                 <InputText 
                     value={this.state.cliente.nomeDoCliente || ''} 
                     className="input"
+                    readOnly
                     onChange={(e) => this.setState({nomeDoCliente: e.target.value})}
                     onDoubleClick={()=>this.setState({visibleClientes: true})}/>
                     
@@ -257,61 +322,70 @@ class AtendimentoInput extends Component {
                         <Button label="Cancelar" onClick={() => this.setState({visibleClientes: false})}/>
                 </Dialog>
 
-                <h3>Veículo</h3>
-                <InputText 
-                    value={this.state.veiculo.numeroDaPlaca || ''} 
-                    className="input"
-                    onChange={(e) => this.setState({numeroDaPlaca: e.target.value})}
-                    onDoubleClick={()=>{this.setState({visibleVeiculos: true})}}/>
-                    
-                <Dialog 
-                    header="Veiculos" 
-                    visible={this.state.visibleVeiculos} 
-                    modal={true} 
-                    onHide={() => this.setState({visibleVeiculos: false})}>
-                        <DataTable 
-                            value={this.state.veiculos}
-                            selectionMode="single"
-                            selection={this.state.selectedVeiculo} 
-                            onSelectionChange={e => this.setState({selectedVeiculo: e.value})}>
-                            <Column field="numeroDaPlaca" header="ID" />
-                        </DataTable>
-                        <Button label="Confirmar" onClick={() => this.confirmarSelectedVeiculo()}/>
-                        <Button label="Cancelar" onClick={() => this.setState({visibleVeiculos: false})}/>
-                </Dialog>
+                <h3>Veiculos</h3>
+                <Dropdown optionLabel="name" 
+                            value={this.state.veiculo}
+                            options={this.getVeiculos()} 
+                            onChange={(e) => {this.setState({veiculo: e.value})}} placeholder="Selecione o Veiculo"/>
 
                 <h3>Tipo de Atendimento</h3>
                 <Dropdown optionLabel="name" 
                             value={this.state.tipoAtendimentoSelecionado}
-                            options={ufs} 
-                            onChange={(e) => {this.setState({tipoAtendimentoSelecionado: e.value})}} placeholder="Selecione o Tipo de Atendimento"/>
-               
-                <h3>Valor Base</h3>
+                            options={tipos} 
+                            onChange={(e)=>{this.onDescontoChange(e)}} placeholder="Selecione o Tipo de Atendimento"/>
+                
+                <h3>Funcionário</h3>
+                <Dropdown optionLabel="name" 
+                        value={this.state.funcionario}
+                        options={funcionarios} 
+                        onChange={(e) => {this.setState({funcionario: e.value})}} placeholder="Selecione o Funcionário"/>
+
+                <h3>Data da Entrada</h3>
                 <InputText 
-                    value={this.state.selectedVaga.valorBase || ''} 
+                    value={this.state.dataEntrada || ''} 
                     className="input"
+                    readOnly
+                    onChange={(e) => this.setState({dataEntrada: e.target.value})}/>
+
+                <h3>Data de Saída</h3>
+                <InputMask
+                    mask="99/99/9999 99:99:99"
+                    value={this.state.dataSaida || ''} 
+                    className="input"
+                    readOnly
+                    onChange={(e) => this.setState({dataSaida: e.target.value})}/>
+
+                <h3>Horas de Atendimento</h3>
+                <InputText 
+                    value={this.getHorasAtendimento()} 
+                    className="input"
+                    readOnly />
+
+                <h3>Valor Base por Hora</h3>
+                <InputText 
+                    value={this.state.selectedVaga.valorBase || 0} 
+                    className="input"
+                    readOnly 
                     onChange={(e) => this.setState({valorBase: e.target.value})}/>
-                    
-                <h3>Valor Total</h3>
-                <InputText 
-                    value={this.state.valorTotal} 
-                    className="input"
-                    onChange={(e) => this.setState({valorTotal: e.target.value})}/>
                 
                 <h3>Desconto</h3>
                 <InputText 
-                    value={this.state.desconto || ''} 
+                    value={this.state.desconto || 0} 
                     className="input"
+                    readOnly 
                     onChange={(e) => this.setState({desconto: e.target.value})}/>
-                
-                <h3>Funcionário</h3>
+
+                <h3>Valor Total</h3>
                 <InputText 
-                    value={this.state.funcionario || ''} 
+                    value={this.state.valorTotal || 0} 
                     className="input"
-                    onChange={(e) => this.setState({funcionario: e.target.value})}/>
+                    readOnly 
+                    onChange={(e) => this.setState({valorTotal: e.target.value})}/>
                 
-                <Button label="Click" onClick={this.setRequest.bind(this)} />
-                                
+                
+                <Button className="btn_confirmar" label="Salvar" onClick={this.setRequest.bind(this)} />
+                <Button className="btn_confirmar" label="Teste" onClick={()=>{this.getHorasAtendimento()}} />
+                
             </div>
         )
     }
