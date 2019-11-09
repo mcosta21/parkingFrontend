@@ -9,6 +9,7 @@ import Atendimentos from './components/Atendimentos';
 import Vagas from './components/Vagas';
 import ListaClientes from './components/ListaClientes';
 import ClienteInput from './components/ClienteInput';
+import FuncionarioInput from './components/FuncionarioInput';
 
 ReactDOM.render(
 
@@ -20,6 +21,7 @@ ReactDOM.render(
             <Route path="/vagasDisponiveis" component={Vagas} />
             <Route path="/listaClientes" component={ListaClientes} />
             <Route path="/cliente" component={ClienteInput} />
+            <Route path="/funcionario" component={FuncionarioInput} />
 
         </Switch>
     </ BrowserRouter>

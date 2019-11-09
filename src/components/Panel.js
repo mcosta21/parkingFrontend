@@ -128,10 +128,10 @@ export default function Panel() {
               </Grid>
 
               <Grid item xs={6} sm={3}>
-                  <Link to="/atendimento">
+                  <Link to="/funcionario">
                     <Button className={classes.btn} label={" "}>
-                      <Icon className={classes.icon}>drive_eta</Icon>
-                      <Paper className={classes.titleBtn}>VEÍCULOS</Paper>
+                      <Icon className={classes.icon}>supervised_user_circle</Icon>
+                      <Paper className={classes.titleBtn}>FUNCIONÁRIO</Paper>
                     </Button>
                   </Link>               
               </Grid>
