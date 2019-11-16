@@ -122,3 +122,35 @@
   color: #2b3553 !important;  
   transition: 0.5s;
 }
+
+.painel_veiculos_cliente{
+  display: flex;
+}
+
+.painel_veiculos_cliente div{
+  width: 100%;
+  border-bottom: 2px solid #2b3553 !important;
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+
+}
+
+.painel_veiculos_btns{
+  text-align: right !important;
+}
+
+.btn_confirmar2{
+  padding: 5px 10px;
+  margin: 15px 9px !important;
+  border-radius: 5px !important;
+  font-weight: bold;
+  color: #dbd8e3 !important;
+}
+
+.title_cliente{
+  color: red
+}
+
+#input{
+  display: none;
+}

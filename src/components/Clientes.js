@@ -2,20 +2,22 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Header from './Header.js'
 import '../App.css';
+import {DataTable} from 'primereact/datatable';
+import {Column} from 'primereact/column';
 import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
 import { InputMask } from 'primereact/inputmask';
 import { Dropdown } from 'primereact/dropdown';
 import {Dialog} from 'primereact/dialog';
-import {DataTable} from 'primereact/datatable';
-import {Column} from 'primereact/column';
+import { InputText } from 'primereact/inputtext';
 
-class ClienteInput extends Component {
-
+class Clientes extends Component {
+    
     constructor(props) {
         super(props);
         this.state = {
+            clientes: [],
             loading: true,
+            selectedCliente: null,
             nomeDoCliente: null,
             cpfDoCliente: null,
             rgDoCliente: null,
@@ -41,12 +43,14 @@ class ClienteInput extends Component {
     }
 
     componentDidMount() {
+        this.getRequestClientes();
         this.getRequestUfs()
     }
 
     setRequest() {
-        axios.post('http://localhost:8080/estacionamento/rest/ws/createCliente',
-            {
+        axios.post('http://localhost:8080/estacionamento/rest/ws/editarCliente',
+            {   
+                "idCliente": this.state.selectedCliente.idCliente,
                 "nomeDoCliente": this.state.nomeDoCliente,
                 "cpfDoCliente": this.state.cpfDoCliente,
                 "rgDoCliente": this.state.rgDoCliente,
@@ -82,8 +86,8 @@ class ClienteInput extends Component {
                 alert(error.response);
             })
             .finally(() => {
-                alert("Cliente cadastrado com sucesso")
-                window.location = '/'
+                alert("Cliente alterado com sucesso")
+                window.location = '/clientes'
             })
     }
 
@@ -288,6 +292,10 @@ class ClienteInput extends Component {
         window.location = '/'
     }
 
+    voltarParaLista(){
+        displayLista()
+    }
+
     renderInput() {
         const ufs = this.getUfs();
         const sexo = [
@@ -307,10 +315,10 @@ class ClienteInput extends Component {
             { label: 'Devedor', value: 'DEVEDOR' }
         ];
         return (
-            <div className="body">
+            <div id="input" className="body">
                 <div className="bread">
                     <div>
-                        <Button className="button_bread" onClick={()=>{this.removerTodosVeiculos()}}label="Voltar"/>
+                        <Button className="button_bread" onClick={()=>{this.voltarParaLista()}} label="Voltar"/>
                     </div>
                     <div>
                         <h4>Cliente</h4>
@@ -431,16 +439,84 @@ class ClienteInput extends Component {
                 </DataTable>
                 
                 <Button label="Salvar" className="btn_confirmar" onClick={this.setRequest.bind(this)} />
-                <Button label="Cancelar" className="btn_confirmar" onClick={()=>{this.removerTodosVeiculos()}} />
+                <Button label="Cancelar" className="btn_confirmar" onClick={()=>{this.voltarParaLista()}} />
             </div>
         )
+    }
+
+    renderLista(){
+        return (
+            <div id="lista" className="body">
+
+                    <div className="bread">
+                        <div>
+                            <Button className="button_bread" onClick={()=>{window.location = '/'}} label="Voltar"/>
+                        </div>
+                        <div>
+                            <h4>Cliente</h4>
+                        </div>
+                    </div>
+
+                    <DataTable 
+                        value={this.state.clientes}
+                        selectionMode="single"
+                        selection={this.state.selectedCliente} 
+                        emptyMessage="Nenhum cliente registrado."
+                        paginator={true} 
+                        responsive={true}
+                        rows={20}
+                        onRowDoubleClick={(e)=>{this.renderCliente(e.data)}}>
+
+                        <Column className="title_cliente" field="idCliente" header="ID" />  
+                        <Column  field="nomeDoCliente" header="NOME" />    
+                        <Column  field="cpfDoCliente" header="CPF" />    
+                        <Column  field="rgDoCliente" header="RG" />     
+                        <Column  field="sexoDoCliente" header="SEXO" />   
+                        <Column  field="dataDeNascimento" header="NASCIMENTO" />  
+                        <Column  field="tipoCliente" header="TIPO" />     
+                        <Column  field="situacaoCliente" header="SITUAÇÃO" />        
+                    </DataTable>
+                </div>
+
+        )
+    }
+
+    getRequestClientes() {
+        axios
+            .get('http://localhost:8080/estacionamento/rest/ws/getClientes/')
+            .then(res =>
+                this.setState({ 
+                    clientes: res.data, 
+                    loading: false 
+                }),
+            );
+    }
+
+    renderCliente(e){
+        console.log(e)
+        displayInput()
+        let clienteSelecionado = e
+        console.log(clienteSelecionado.nomeDoCliente)
+        this.setState({
+            selectedCliente: clienteSelecionado,
+            nomeDoCliente: clienteSelecionado.nomeDoCliente,
+            cpfDoCliente: clienteSelecionado.cpfDoCliente,
+            rgDoCliente: clienteSelecionado.rgDoCliente,
+            enderecoDoCliente: clienteSelecionado.enderecoDoCliente,
+            sexoDoCliente: clienteSelecionado.sexoDoCliente,
+            dataDeNascimento: clienteSelecionado.dataDeNascimento,
+            tipoCliente: clienteSelecionado.tipoCliente,
+            situacaoCliente: clienteSelecionado.situacaoCliente,
+            veiculos: clienteSelecionado.veiculos,
+        })
+        
     }
 
     render() {
         return (
             <div>
-                <Header />
-                {}
+                <Header/>
+                {this.renderLista()}
                 {this.renderInput()}
             </div>
         );
@@ -461,5 +537,19 @@ function displayBotaoEditarVeiculo(){
     editar.style.display = 'block'
 }
 
+function displayInput(){
+    let input = document.getElementById('input')
+    input.style.display = 'block'
+    let lista = document.getElementById('lista')
+    lista.style.display = 'none'
+}
 
-export default ClienteInput;
+function displayLista(){
+    let input = document.getElementById('input')
+    input.style.display = 'none'
+    let lista = document.getElementById('lista')
+    lista.style.display = 'block'
+}
+
+export default Clientes;
+

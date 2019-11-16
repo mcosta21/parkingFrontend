@@ -96,15 +96,49 @@ class AtendimentoInput extends Component {
 
     getTiposDeAtendimentos() {
         return this.state.tiposAtendimentos.map((valor) => (
-            {name: valor.nomeDoTipoAtendimento, code: valor.idTipoAtendimento, porcentagem: valor.porcentagemDesconto}
+            {
+             name: valor.nomeDoTipoAtendimento + ' - Desconto de ' + valor.porcentagemDesconto + '% ',
+             code: valor.idTipoAtendimento, 
+             porcentagem: valor.porcentagemDesconto
+            }
         ))
     }
 
-    onDescontoChange(e){
-        this.setState({
-            tipoAtendimentoSelecionado: e.value,
-            desconto: this.state.valorTotal * (Number.parseInt(e.value.porcentagem) / 100)
+    async onDescontoChange(e){
+        let promise = new Promise((resolve) => {
+            resolve(
+                this.setState({
+                    tipoAtendimentoSelecionado: e.value,
+                    porcentagem: e.value.porcentagem,
+                })
+            )
         });
+        await promise;
+    }
+
+    async getValorTotal(e){        
+        if((e.value === '' || e.value.replace("_", "").length < 19) || this.state.tipoAtendimentoSelecionado === ''){
+            return 0
+        }
+        let dtSaida = new Date(e.value)
+        let dtEntrada = new Date(this.state.dataEntrada)
+        let diffMs = (dtSaida - dtEntrada);
+        let diffHrs = Math.floor((diffMs % 86400000) / 3600000);
+        let diffMins = Math.round(((diffMs) % 86400000 % 3600000) / 60000);
+        let valorPorMinuto = this.state.selectedVaga.valorBase / 60;
+        let valor = this.state.selectedVaga.valorBase * diffHrs + valorPorMinuto * diffMins;
+        let porcent = this.state.porcentagem
+        let promise = new Promise((resolve) => {
+            resolve(
+                this.setState({
+                    dataSaida: e.value,
+                    valorTotal: (Number.parseFloat(valor) - (Number.parseFloat(valor) * (Number.parseInt(porcent) / 100))).toFixed(2),
+                    desconto: (Number.parseFloat(valor) * (Number.parseInt(porcent) / 100)).toFixed(2)
+                })
+            )
+        });
+        await promise;
+
     }
 
     getRequestAtendimentos(){    
@@ -136,7 +170,7 @@ class AtendimentoInput extends Component {
     }
 
     getHorasAtendimento(){
-        if(this.state.dataSaida === ''){
+        if((this.state.dataSaida === '' || this.state.dataSaida.replace("_", "").length < 19) || this.state.tipoAtendimentoSelecionado === ''){
             return 0
         }
         let dtSaida = new Date(this.state.dataSaida)
@@ -144,22 +178,8 @@ class AtendimentoInput extends Component {
         let diffMs = (dtSaida - dtEntrada);
         let diffHrs = Math.floor((diffMs % 86400000) / 3600000);
         let diffMins = Math.round(((diffMs) % 86400000 % 3600000) / 60000);
-        let diff = diffHrs + 'h ' + diffMins + 'm';
+        let diff = diffHrs + 'h ' + diffMins + 'm'   
         return diff
-    }
-
-    getValorTotal(){
-        if(this.state.dataSaida === ''){
-            return 0
-        }
-        let dtSaida = new Date(this.state.dataSaida)
-        let dtEntrada = new Date(this.state.dataEntrada)
-        let diffMs = (dtSaida - dtEntrada);
-        let diffHrs = Math.floor((diffMs % 86400000) / 3600000);
-        let valor = this.state.selectedVaga.valorBase * diffHrs - this.state.desconto;
-        this.setState({
-            valorTotal: valor
-        })
     }
    
     setRequest(){
@@ -221,8 +241,8 @@ class AtendimentoInput extends Component {
                     visibleClientes: false
                 })
             )
-        });        
-        let result = await promise;
+        });
+        await promise;
         this.getRequestVeiculosDoCliente()
     }
 
@@ -353,7 +373,7 @@ class AtendimentoInput extends Component {
                     value={this.state.dataSaida || ''} 
                     className="input"
                     readOnly
-                    onChange={(e) => this.setState({dataSaida: e.target.value})}/>
+                    onChange={(e)=>{this.getValorTotal(e)}}/>
 
                 <h3>Horas de Atendimento</h3>
                 <InputText 
@@ -377,14 +397,14 @@ class AtendimentoInput extends Component {
 
                 <h3>Valor Total</h3>
                 <InputText 
-                    value={this.state.valorTotal || 0} 
+                    value={this.state.valorTotal} 
                     className="input"
                     readOnly 
                     onChange={(e) => this.setState({valorTotal: e.target.value})}/>
                 
                 
                 <Button className="btn_confirmar" label="Salvar" onClick={this.setRequest.bind(this)} />
-                <Button className="btn_confirmar" label="Teste" onClick={()=>{this.getHorasAtendimento()}} />
+                <Button className="btn_confirmar" label="Teste" onClick={()=>{console.log(this.getValorTotal())}} />
                 
             </div>
         )

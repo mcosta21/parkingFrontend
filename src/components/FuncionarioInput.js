@@ -125,7 +125,7 @@ class FuncionarioInput extends Component {
                 this.setState({ ufSelecionada: e.value, municipios: [], bairros: [], municipioSelecionado: '', bairroSelecionado: '' }),
             )
         });
-        let result = await promise;
+        await promise;
         console.log(this.state.ufSelecionada.code);
         this.getRequestMunicipios();
     }
@@ -153,7 +153,7 @@ class FuncionarioInput extends Component {
                 this.setState({ municipioSelecionado: e.value })
             )
         });
-        let result = await promise;
+        await promise;
         console.log(this.state.municipioSelecionado.name);
         this.getRequestBairros();
     }
