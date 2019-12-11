@@ -29,23 +29,22 @@ class AtendimentoInput extends Component {
             valorTotal: 0,
             caminho: '/vagasDisponiveis',
             veiculos: [],
-            veiculo: '',
-            selectedVeiculo: '',
+            veiculo: null,
+            selectedVeiculo: null,
             visibleVeiculos: false,
-            tipoAtendimentoSelecionado: '',
+            tipoAtendimentoSelecionado: null,
             tiposAtendimentos: [],
             desconto: 0,
-            funcionario: '',
+            funcionario: null,
             funcionarios: [],
-            dataEntrada: '',
-            dataSaida: '',
+            dataEntrada: null,
+            dataSaida: null,
             porcentagem: 0
         };    
     }
 
     componentDidMount() {
         this.getRequestClientes()
-        this.getRequestAtendimentos()
         this.getRequestVagas()
         this.getRequestTiposAtendimentos()
         this.getRequestFuncionarios()
@@ -116,14 +115,22 @@ class AtendimentoInput extends Component {
         await promise;
     }
 
+    formatarData(data){
+        return data.substr(6, 4) + '-' + data.substr(3, 2) + '-' + data.substr(0, 2) + "T" + data.substr(11, 19) + '.000Z'
+    }
+
     async getValorTotal(e){        
-        if((e.value === '' || e.value.replace("_", "").length < 19) || this.state.tipoAtendimentoSelecionado === ''){
+        if((e.value === '' || e.value.replace("_", "").length < 19) || this.state.tipoAtendimentoSelecionado === null){
             return 0
         }
-        let dtSaida = new Date(e.value)
-        let dtEntrada = new Date(this.state.dataEntrada)
+        
+        let dtSaida = new Date(this.formatarData(e.value))
+        let dtEntrada = new Date(this.formatarData(this.state.dataEntrada))
+        let timeDiff = Math.abs(dtSaida - dtEntrada);
+        let diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) - 1; 
+        let horasDias = diffDays * 24;
         let diffMs = (dtSaida - dtEntrada);
-        let diffHrs = Math.floor((diffMs % 86400000) / 3600000);
+        let diffHrs = Math.floor((diffMs % 86400000) / 3600000) + horasDias;
         let diffMins = Math.round(((diffMs) % 86400000 % 3600000) / 60000);
         let valorPorMinuto = this.state.selectedVaga.valorBase / 60;
         let valor = this.state.selectedVaga.valorBase * diffHrs + valorPorMinuto * diffMins;
@@ -139,17 +146,6 @@ class AtendimentoInput extends Component {
         });
         await promise;
 
-    }
-
-    getRequestAtendimentos(){    
-        axios
-        .get('http://localhost:8080/estacionamento/rest/ws/getAtendimentos/')
-        .then(res =>
-            this.setState({ 
-                atendimentos: res.data, 
-                loading: false 
-            }),
-        );
     }
     
     getRequestFuncionarios() {
@@ -170,40 +166,77 @@ class AtendimentoInput extends Component {
     }
 
     getHorasAtendimento(){
-        if((this.state.dataSaida === '' || this.state.dataSaida.replace("_", "").length < 19) || this.state.tipoAtendimentoSelecionado === ''){
+        if((this.state.dataSaida === null || this.state.dataSaida.replace("_", "").length < 19) || this.state.tipoAtendimentoSelecionado === null){
             return 0
         }
-        let dtSaida = new Date(this.state.dataSaida)
-        let dtEntrada = new Date(this.state.dataEntrada)
+        let dtSaida = new Date(this.formatarData(this.state.dataSaida))
+        let dtEntrada = new Date(this.formatarData(this.state.dataEntrada))
+        let timeDiff = Math.abs(dtSaida - dtEntrada);
+        let diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) - 1; 
+        let horasDias = diffDays * 24;
+
         let diffMs = (dtSaida - dtEntrada);
         let diffHrs = Math.floor((diffMs % 86400000) / 3600000);
         let diffMins = Math.round(((diffMs) % 86400000 % 3600000) / 60000);
-        let diff = diffHrs + 'h ' + diffMins + 'm'   
+        let diff = (diffHrs + horasDias) + 'h ' + diffMins + 'm'   
         return diff
+    }
+
+    limparData(data){
+        if(data == null){
+            return ''
+        }
+        return  data.substr(8, 2) + '/' + data.substr(5, 2) + '/' + data.substr(0, 4) + ' ' + data.substr(11, 19)
     }
    
     setRequest(){
+        let veiculo
+        if(this.state.veiculo != null){
+            veiculo = this.state.veiculo.code
+        }
+        let tipoAtendimento
+        if(this.state.tipoAtendimentoSelecionado != null){
+            tipoAtendimento = this.state.tipoAtendimentoSelecionado.code
+        }
+        let funcionario
+        if(this.state.funcionario != null){
+            funcionario = this.state.funcionario.code
+        }
         axios.post('http://localhost:8080/estacionamento/rest/ws/createAtendimento',
         {
             "cliente": this.state.cliente.idCliente,
             "vaga": this.state.selectedVaga.idVaga,
+            "dataEntrada": this.formatarData(this.state.dataEntrada),
+            "dataSaida": this.formatarData(this.state.dataSaida),
+            "veiculo": veiculo,
+            "tipoDeAtendimento": tipoAtendimento,
             "valorBase": this.state.selectedVaga.valorBase,
-            "valorTotal": this.state.valorTotal,
-            "funcionario": this.state.funcionario
+            "funcionario": funcionario,
+            "valorTotal": this.state.valorTotal
         })
         .then(response => {     
             console.log(response);
-            this.setState=({cliente: '', vagas: [], selectedCliente: '', selectedVaga: '', valorTotal: '0'})            
-            this.setRequestAlterarStatusVaga('2')                      
+            this.setState=({
+                    cliente: '', 
+                    vagas: [], 
+                    selectedCliente: '', 
+                    selectedVaga: '', 
+                    dataEntrada: null,
+                    dataSaida: null,
+                    tipoAtendimentoSelecionado: null,
+                    valorBase: 0,
+                    valorTotal: 0,
+                    funcionario: null
+            })            
+            this.setRequestAlterarStatusVaga('2')
+            if(response.status === 200){
+                window.location = '/'
+            }                   
         })       
         .catch(error => {
             console.log(error.response)
-            alert(error.response);
+            alert(error.response.data);
         })
-        .finally(()=>{
-            alert("Atendimento cadastrado com sucesso")
-            window.location = '/'
-        })   
     }
 
     setRequestAlterarStatusVaga(status){
@@ -222,7 +255,7 @@ class AtendimentoInput extends Component {
     }
 
     getStatusAtendimento(){
-        return (this.state.dataSaida === '' ? 'Aberto' : 'Fechado')
+        return (this.state.dataSaida === null ? 'Aberto' : 'Fechado')
     }
 
     renderClientes() {
@@ -251,12 +284,6 @@ class AtendimentoInput extends Component {
                         funcionario: this.state.selectedFuncionario, 
                         visibleFuncionarios: false
                     });  
-    }
-
-    renderAtendimentos() {
-        return this.state.atendimentos.map((valor, i) => (
-            <li key={i}>{valor.idAtendimento}</li>
-        ))
     }
 
     _handleDoubleClickItem(event){
@@ -317,7 +344,7 @@ class AtendimentoInput extends Component {
                     readOnly
                     onChange={(e) => this.setState({nomeDaVaga: e.target.value})}/>
 
-                <h3>Cliente</h3>
+                <h3>Cliente *</h3>
                 <InputText 
                     value={this.state.cliente.nomeDoCliente || ''} 
                     className="input"
@@ -342,19 +369,19 @@ class AtendimentoInput extends Component {
                         <Button label="Cancelar" onClick={() => this.setState({visibleClientes: false})}/>
                 </Dialog>
 
-                <h3>Veiculos</h3>
+                <h3>Veiculo *</h3>
                 <Dropdown optionLabel="name" 
                             value={this.state.veiculo}
                             options={this.getVeiculos()} 
                             onChange={(e) => {this.setState({veiculo: e.value})}} placeholder="Selecione o Veiculo"/>
 
-                <h3>Tipo de Atendimento</h3>
+                <h3>Tipo de Atendimento *</h3>
                 <Dropdown optionLabel="name" 
                             value={this.state.tipoAtendimentoSelecionado}
                             options={tipos} 
                             onChange={(e)=>{this.onDescontoChange(e)}} placeholder="Selecione o Tipo de Atendimento"/>
                 
-                <h3>Funcionário</h3>
+                <h3>Funcionário *</h3>
                 <Dropdown optionLabel="name" 
                         value={this.state.funcionario}
                         options={funcionarios} 
@@ -404,7 +431,7 @@ class AtendimentoInput extends Component {
                 
                 
                 <Button className="btn_confirmar" label="Salvar" onClick={this.setRequest.bind(this)} />
-                <Button className="btn_confirmar" label="Teste" onClick={()=>{console.log(this.getValorTotal())}} />
+                <Button className="btn_confirmar" label="Cancelar" onClick={()=>{window.location = '/'}} />
                 
             </div>
         )

@@ -48,6 +48,10 @@ class Clientes extends Component {
     }
 
     setRequest() {
+        let bairro
+        if(this.state.bairroSelecionado != null){
+            bairro = this.state.bairroSelecionado.code
+        }
         axios.post('http://localhost:8080/estacionamento/rest/ws/editarCliente',
             {   
                 "idCliente": this.state.selectedCliente.idCliente,
@@ -59,7 +63,7 @@ class Clientes extends Component {
                 "dataDeNascimento": this.state.dataDeNascimento,
                 "tipoCliente": this.state.tipoCliente,
                 "situacaoCliente": this.state.situacaoCliente,
-                "bairro": this.state.bairroSelecionado,
+                "bairro": bairro,
                 "veiculos": this.state.veiculos
             })
             .then(response => {
@@ -80,14 +84,13 @@ class Clientes extends Component {
                     bairroSelecionado: null,
                     veiculos: [],
                 })
+                if(response.status === 200){
+                    window.location = '/clientes'
+                }
             })
             .catch(error => {
                 console.log(error.response)
                 alert(error.response);
-            })
-            .finally(() => {
-                alert("Cliente alterado com sucesso")
-                window.location = '/clientes'
             })
     }
 
@@ -453,7 +456,7 @@ class Clientes extends Component {
                             <Button className="button_bread" onClick={()=>{window.location = '/'}} label="Voltar"/>
                         </div>
                         <div>
-                            <h4>Cliente</h4>
+                            <h4>Clientes</h4>
                         </div>
                     </div>
 
@@ -469,12 +472,11 @@ class Clientes extends Component {
 
                         <Column className="title_cliente" field="idCliente" header="ID" />  
                         <Column  field="nomeDoCliente" header="NOME" />    
-                        <Column  field="cpfDoCliente" header="CPF" />    
-                        <Column  field="rgDoCliente" header="RG" />     
-                        <Column  field="sexoDoCliente" header="SEXO" />   
-                        <Column  field="dataDeNascimento" header="NASCIMENTO" />  
+                        <Column  field="cpfDoCliente" header="CPF" />      
                         <Column  field="tipoCliente" header="TIPO" />     
-                        <Column  field="situacaoCliente" header="SITUAÇÃO" />        
+                        <Column  field="situacaoCliente" header="SITUAÇÃO" />    
+                        <Column  field="bairro.municipio.nomeDoMunicipio" header="Município" />   
+                        <Column  field="bairro.municipio.uf.nomeDaUf" header="Uf" />        
                     </DataTable>
                 </div>
 
@@ -492,24 +494,62 @@ class Clientes extends Component {
             );
     }
 
-    renderCliente(e){
+    formatarData(data){
+
+    }
+
+    async renderCliente(e){
         console.log(e)
         displayInput()
         let clienteSelecionado = e
-        console.log(clienteSelecionado.nomeDoCliente)
-        this.setState({
-            selectedCliente: clienteSelecionado,
-            nomeDoCliente: clienteSelecionado.nomeDoCliente,
-            cpfDoCliente: clienteSelecionado.cpfDoCliente,
-            rgDoCliente: clienteSelecionado.rgDoCliente,
-            enderecoDoCliente: clienteSelecionado.enderecoDoCliente,
-            sexoDoCliente: clienteSelecionado.sexoDoCliente,
-            dataDeNascimento: clienteSelecionado.dataDeNascimento,
-            tipoCliente: clienteSelecionado.tipoCliente,
-            situacaoCliente: clienteSelecionado.situacaoCliente,
-            veiculos: clienteSelecionado.veiculos,
-        })
+        let dataDeNascimento = new Date(clienteSelecionado.dataDeNascimento);
+        let eventBairroSelecionado
+        let eventMunicipioSelecionado
+        let evenUfSelecionada
+
+        if(clienteSelecionado.bairro != null){
+            eventBairroSelecionado = {
+                name: clienteSelecionado.bairro.nomeDoBairro,
+                code: clienteSelecionado.bairro.idBairro
+            }
+
+            evenUfSelecionada = {
+                name: clienteSelecionado.bairro.municipio.uf.nomeDaUf,
+                code: clienteSelecionado.bairro.municipio.uf.idUf
+            }
+    
+            eventMunicipioSelecionado = {
+                name: clienteSelecionado.bairro.municipio.nomeDoMunicipio,
+                code: clienteSelecionado.bairro.municipio.idMunicipio
+            }
+        }        
+
+        let promise = new Promise((resolve) => {
+            resolve(
+                this.setState({ 
+                    selectedCliente: clienteSelecionado,
+                    nomeDoCliente: clienteSelecionado.nomeDoCliente,
+                    cpfDoCliente: clienteSelecionado.cpfDoCliente,
+                    rgDoCliente: clienteSelecionado.rgDoCliente,
+                    enderecoDoCliente: clienteSelecionado.enderecoDoCliente,
+                    sexoDoCliente: clienteSelecionado.sexoDoCliente,
+                    dataDeNascimento: dataDeNascimento.toLocaleDateString(),
+                    tipoCliente: clienteSelecionado.tipoCliente,
+                    situacaoCliente: clienteSelecionado.situacaoCliente,
+                    veiculos: clienteSelecionado.veiculos,
+                    ufSelecionada: evenUfSelecionada,
+                    municipioSelecionado: eventMunicipioSelecionado,
+                    bairroSelecionado: eventBairroSelecionado
+                
+                })
+            )
+        });
+        await promise;
         
+        if(clienteSelecionado.bairro != null){
+            this.getRequestMunicipios()
+            this.getRequestBairros()
+        }
     }
 
     render() {

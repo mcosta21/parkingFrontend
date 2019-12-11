@@ -45,6 +45,11 @@ class ClienteInput extends Component {
     }
 
     setRequest() {
+        let bairro
+        if(this.state.bairroSelecionado != null){
+            bairro = this.state.bairroSelecionado.code
+        }
+         
         axios.post('http://localhost:8080/estacionamento/rest/ws/createCliente',
             {
                 "nomeDoCliente": this.state.nomeDoCliente,
@@ -55,7 +60,7 @@ class ClienteInput extends Component {
                 "dataDeNascimento": this.state.dataDeNascimento,
                 "tipoCliente": this.state.tipoCliente,
                 "situacaoCliente": this.state.situacaoCliente,
-                "bairro": this.state.bairroSelecionado,
+                "bairro": bairro,
                 "veiculos": this.state.veiculos
             })
             .then(response => {
@@ -76,14 +81,14 @@ class ClienteInput extends Component {
                     bairroSelecionado: null,
                     veiculos: [],
                 })
+                if(response.status === 200){
+                    window.location = '/'
+                }
+                
             })
             .catch(error => {
                 console.log(error.response)
-                alert(error.response);
-            })
-            .finally(() => {
-                alert("Cliente cadastrado com sucesso")
-                window.location = '/'
+                alert(error.response.data);
             })
     }
 
