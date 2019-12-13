@@ -139,48 +139,47 @@ export default function Panel() {
               <Grid item xs={6} sm={3}>
                   <Link to="/vagasDisponiveis">
                     <Button className={classes.btn} label={" "}>
-                      <Icon className={classes.icon}>filter_1</Icon>
-                      <Paper className={classes.titleBtn}>VAGAS</Paper>
+                      <Icon className={classes.icon}>attach_money</Icon>
+                      <Paper className={classes.titleBtn}>FLUXO DE CAIXA</Paper>
                     </Button>
                   </Link>               
               </Grid>
 
               <Grid item xs={6} sm={3}>
-                  <Link to="/vagasDisponiveis">
+                  <Link to="/bairro">
                     <Button className={classes.btn} label={" "}>
-                      <Icon className={classes.icon}>filter_1</Icon>
-                      <Paper className={classes.titleBtn}>VAGAS</Paper>
+                      <Icon className={classes.icon}>store_mall_directory</Icon>
+                      <Paper className={classes.titleBtn}>BAIRRO</Paper>
                     </Button>
                   </Link>               
               </Grid>
 
               <Grid item xs={6} sm={3}>
-                  <Link to="/vagasDisponiveis">
+                  <Link to="/municipio">
                     <Button className={classes.btn} label={" "}>
-                      <Icon className={classes.icon}>filter_1</Icon>
-                      <Paper className={classes.titleBtn}>VAGAS</Paper>
+                      <Icon className={classes.icon}>home_work</Icon>
+                      <Paper className={classes.titleBtn}>MUNICÍPIO</Paper>
                     </Button>
                   </Link>               
               </Grid>
 
               <Grid item xs={6} sm={3}>
-                  <Link to="/vagasDisponiveis">
+                  <Link to="/uf">
                     <Button className={classes.btn} label={" "}>
-                      <Icon className={classes.icon}>filter_1</Icon>
-                      <Paper className={classes.titleBtn}>VAGAS</Paper>
+                      <Icon className={classes.icon}>map</Icon>
+                      <Paper className={classes.titleBtn}>UF</Paper>
                     </Button>
                   </Link>               
               </Grid>
 
               <Grid item xs={6} sm={3}>
-                  <Link to="/vagasDisponiveis">
+                  <Link to="/cargo">
                     <Button className={classes.btn} label={" "}>
-                      <Icon className={classes.icon}>filter_1</Icon>
-                      <Paper className={classes.titleBtn}>VAGAS</Paper>
+                      <Icon className={classes.icon}>work_outline</Icon>
+                      <Paper className={classes.titleBtn}>CARGO</Paper>
                     </Button>
                   </Link>               
-              </Grid>
-              
+              </Grid>              
 
           </Grid>
       </TabPanel>
@@ -207,6 +206,51 @@ export default function Panel() {
                     <Button className={classes.btn} label={" "}>
                       <Icon className={classes.icon}>face</Icon>
                       <Paper className={classes.titleBtn}>CLIENTES</Paper>
+                    </Button>
+                  </Link>               
+              </Grid>
+
+              <Grid item xs={6} sm={3}>
+                  <Link to="/funcionarios">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>face</Icon>
+                      <Paper className={classes.titleBtn}>FUNCIONÁRIOS</Paper>
+                    </Button>
+                  </Link>               
+              </Grid>
+
+              <Grid item xs={6} sm={3}>
+                  <Link to="/bairros">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>face</Icon>
+                      <Paper className={classes.titleBtn}>BAIRROS</Paper>
+                    </Button>
+                  </Link>               
+              </Grid>
+
+              <Grid item xs={6} sm={3}>
+                  <Link to="/municipios">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>face</Icon>
+                      <Paper className={classes.titleBtn}>MUNICÍPIOS</Paper>
+                    </Button>
+                  </Link>               
+              </Grid>
+
+              <Grid item xs={6} sm={3}>
+                  <Link to="/ufs">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>face</Icon>
+                      <Paper className={classes.titleBtn}>UFS</Paper>
+                    </Button>
+                  </Link>               
+              </Grid>
+
+              <Grid item xs={6} sm={3}>
+                  <Link to="/cargos">
+                    <Button className={classes.btn} label={" "}>
+                      <Icon className={classes.icon}>face</Icon>
+                      <Paper className={classes.titleBtn}>CARGOS</Paper>
                     </Button>
                   </Link>               
               </Grid>

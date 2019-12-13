@@ -62,7 +62,7 @@ class Atendimento extends Component {
         if(this.state.funcionario != null){
             funcionario = this.state.funcionario.code
         }
-        axios.post('http://localhost:8080/estacionamento/rest/ws/editarAtendimento',
+        axios.post('http://localhost:8080/parkingBackend/rest/ws/editarAtendimento',
         {
             "idAtendimento": this.state.idAtendimento,
             "cliente": this.state.cliente.idCliente,
@@ -75,8 +75,7 @@ class Atendimento extends Component {
             "funcionario": funcionario,
             "valorTotal": this.state.valorTotal
         })
-        .then(response => {     
-            console.log(response);
+        .then(response => {                 
             this.setState=({
                     cliente: '', 
                     vagas: [], 
@@ -91,7 +90,8 @@ class Atendimento extends Component {
             })            
             this.setRequestAlterarStatusVaga('2')
             if(response.status === 200){
-                window.location = '/'
+                alert(response.data);
+                window.location = '/atendimentos'
             }                   
         })       
         .catch(error => {
@@ -101,7 +101,7 @@ class Atendimento extends Component {
     }
 
     setRequestAlterarStatusVaga(status){
-        axios.post('http://localhost:8080/estacionamento/rest/ws/alterarStatusVaga',
+        axios.post('http://localhost:8080/parkingBackend/rest/ws/alterarStatusVaga',
         {
             "idVaga": this.state.selectedVaga.idVaga,
             "status": status
@@ -160,7 +160,7 @@ class Atendimento extends Component {
 
     getRequestClientes() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getClientes/')
+            .get('http://localhost:8080/parkingBackend/rest/ws/getClientes/')
             .then(res =>
                 this.setState({ 
                     clientes: res.data, 
@@ -171,7 +171,7 @@ class Atendimento extends Component {
 
     getRequestVeiculosDoCliente() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getVeiculosDoCliente/' + this.state.cliente.idCliente)
+            .get('http://localhost:8080/parkingBackend/rest/ws/getVeiculosDoCliente/' + this.state.cliente.idCliente)
             .then(res =>
                 this.setState({ 
                     veiculos: res.data, 
@@ -188,7 +188,7 @@ class Atendimento extends Component {
 
     getRequestTiposAtendimentos() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getTipoDeAtendimentos/')
+            .get('http://localhost:8080/parkingBackend/rest/ws/getTipoDeAtendimentos/')
             .then(res =>
                 this.setState({ 
                     tiposAtendimentos: res.data, 
@@ -254,7 +254,7 @@ class Atendimento extends Component {
     
     getRequestFuncionarios() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getFuncionarios/')
+            .get('http://localhost:8080/parkingBackend/rest/ws/getFuncionarios/')
             .then(res =>
                 this.setState({ 
                     funcionarios: res.data, 
@@ -289,7 +289,7 @@ class Atendimento extends Component {
 
     getRequestAtendimentos() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getAtendimentos/')
+            .get('http://localhost:8080/parkingBackend/rest/ws/getAtendimentos/')
             .then(res =>
                 this.setState({ 
                     atendimentos: res.data, 
@@ -426,6 +426,34 @@ class Atendimento extends Component {
         return  data.substr(8, 2) + '/' + data.substr(5, 2) + '/' + data.substr(0, 4) + ' ' + data.substr(11, 19)
     }
 
+    mostrarDataEntradaTabela(rowData, column) {
+        let data = rowData['dataEntrada']
+        if(data == null){
+           return <span >Não informado</span>;
+        }
+        let dtEntrada = data.substr(8, 2) + '/' + data.substr(5, 2) + '/' + data.substr(0, 4) + ' ' + data.substr(11, 19)
+        return <span >{dtEntrada}</span>;
+    }
+
+    mostrarDataSaidaTabela(rowData, column) {
+        let data = rowData['dataSaida']
+        if(data == null){
+           return <span >Não informado</span>;
+        }
+        let dtSaida = data.substr(8, 2) + '/' + data.substr(5, 2) + '/' + data.substr(0, 4) + ' ' + data.substr(11, 19)
+        return <span >{dtSaida}</span>;
+    }
+
+    mostrarStatusTabela(rowData, column) {
+        let dataSaida = rowData['dataSaida']
+        if(dataSaida == null){
+           return <span >Aberto</span>;
+        }
+        else{
+           return <span >Fechado</span>; 
+        }
+    }
+    
     async renderAtendimento(e){
         console.log(e)
         displayInput()
@@ -507,12 +535,12 @@ class Atendimento extends Component {
                     rows={20}
                     onRowDoubleClick={(e)=>{this.renderAtendimento(e.data)}}>
                     
-                    <Column field={this.getStatusAtendimento2('dataSaida')} header="Status" /> 
+                    <Column field="dataSaida" body={this.mostrarStatusTabela} header="Status" /> 
                     <Column field="idAtendimento" header="N° Atendimento" />                        
                     <Column field="cliente.nomeDoCliente" header="Cliente" />
                     <Column field="vaga.nomeDaVaga" header="Vaga" />
-                    <Column field="dataEntrada" header="Entrada" />
-                    <Column field="dataSaida" header="Saída" />
+                    <Column field="dataEntrada" body={this.mostrarDataEntradaTabela} header="Entrada"/>                    
+                    <Column field="dataSaida" body={this.mostrarDataSaidaTabela} header="Saída" />
                     <Column field="valorTotal" header="Valor Total" />
                 </DataTable>    
             </div>

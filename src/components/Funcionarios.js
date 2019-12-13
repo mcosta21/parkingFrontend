@@ -2,17 +2,22 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Header from './Header.js'
 import '../App.css';
+import {DataTable} from 'primereact/datatable';
+import {Column} from 'primereact/column';
 import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
 import { InputMask } from 'primereact/inputmask';
 import { Dropdown } from 'primereact/dropdown';
+import {Dialog} from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
 
-class FuncionarioInput extends Component {
-
+class Funcionarios extends Component {
+    
     constructor(props) {
         super(props);
         this.state = {
+            funcionarios: [],
             loading: true,
+            selectedFuncionario: null,
             nomeDoFuncionario: null,
             cpfDoFuncionario: null,
             rgDoFuncionario: null,
@@ -29,12 +34,14 @@ class FuncionarioInput extends Component {
             municipioSelecionado: null,
             bairros: [],
             bairroSelecionado: null,
+            
         };
         this.onUfChange = this.onUfChange.bind(this);
         this.onMunicipioChange = this.onMunicipioChange.bind(this);
     }
 
     componentDidMount() {
+        this.getRequestFuncionarios();
         this.getRequestUfs()
         this.getRequestCargos()
     }
@@ -44,9 +51,9 @@ class FuncionarioInput extends Component {
         if(this.state.bairroSelecionado != null){
             bairro = this.state.bairroSelecionado.code
         }
-         
-        axios.post('http://localhost:8080/parkingBackend/rest/ws/createFuncionario',
-            {
+        axios.post('http://localhost:8080/parkingBackend/rest/ws/editarFuncionario',
+            {   
+                "idFuncionario": this.state.selectedFuncionario.idFuncionario,
                 "nomeDoFuncionario": this.state.nomeDoFuncionario,
                 "cpfDoFuncionario": this.state.cpfDoFuncionario,
                 "rgDoFuncionario": this.state.rgDoFuncionario,
@@ -82,13 +89,12 @@ class FuncionarioInput extends Component {
                 })
                 if(response.status === 200){
                     alert(response.data);
-                    window.location = '/'
+                    window.location = '/funcionarios'
                 }
-                
             })
             .catch(error => {
                 console.log(error.response)
-                alert(error.response.data);
+                alert(error.response);
             })
     }
 
@@ -117,23 +123,6 @@ class FuncionarioInput extends Component {
         });
         await promise;
         this.getRequestMunicipios();
-    }
-
-    getRequestCargos(){
-        axios
-            .get('http://localhost:8080/parkingBackend/rest/ws/getCargos/')
-            .then(res =>
-                this.setState({
-                    cargos: res.data,
-                    loading: false
-                }),
-            );
-    }
-
-    getCargos() {
-        return this.state.cargos.map((valor) => (
-            { name: valor.nomeDoCargo, code: valor.idCargo }
-        ))
     }
 
     getRequestMunicipios() {
@@ -180,6 +169,27 @@ class FuncionarioInput extends Component {
         ))
     }
 
+    voltarParaLista(){
+        displayLista()
+    }
+
+    getRequestCargos(){
+        axios
+            .get('http://localhost:8080/parkingBackend/rest/ws/getCargos/')
+            .then(res =>
+                this.setState({
+                    cargos: res.data,
+                    loading: false
+                }),
+            );
+    }
+
+    getCargos() {
+        return this.state.cargos.map((valor) => (
+            { name: valor.nomeDoCargo, code: valor.idCargo }
+        ))
+    }
+
     renderInput() {
         const ufs = this.getUfs();
         const cargos = this.getCargos();
@@ -190,10 +200,10 @@ class FuncionarioInput extends Component {
         ];
 
         return (
-            <div className="body">
+            <div id="input" className="body">
                 <div className="bread">
                     <div>
-                        <Button className="button_bread" onClick={()=>{window.location="/"}}label="Voltar"/>
+                        <Button className="button_bread" onClick={()=>{this.voltarParaLista()}} label="Voltar"/>
                     </div>
                     <div>
                         <h4>Funcionário</h4>
@@ -276,19 +286,142 @@ class FuncionarioInput extends Component {
                     onChange={(e) => this.setState({ salarioBase: e.target.value })} />
                 
                 <Button label="Salvar" className="btn_confirmar" onClick={this.setRequest.bind(this)} />
-                <Button label="Cancelar" className="btn_confirmar" onClick={()=>{window.location = '/'}} />
+                <Button label="Cancelar" className="btn_confirmar" onClick={()=>{this.voltarParaLista()}} />
             </div>
         )
+    }
+
+    renderLista(){
+        return (
+            <div id="lista" className="body">
+
+                    <div className="bread">
+                        <div>
+                            <Button className="button_bread" onClick={()=>{window.location = '/'}} label="Voltar"/>
+                        </div>
+                        <div>
+                            <h4>Funcionários</h4>
+                        </div>
+                    </div>
+
+                    <DataTable 
+                        value={this.state.funcionarios}
+                        selectionMode="single"
+                        selection={this.state.selectedFuncionario} 
+                        emptyMessage="Nenhum funcionário registrado."
+                        paginator={true} 
+                        responsive={true}
+                        rows={20}
+                        onRowDoubleClick={(e)=>{this.renderFuncionario(e.data)}}>
+
+                        <Column  field="idFuncionario" header="ID" />  
+                        <Column  field="nomeDoFuncionario" header="NOME" />    
+                        <Column  field="cpfDoFuncionario" header="CPF" />      
+                        <Column  field="cargo.nomeDoCargo" header="CARGO" />        
+                        <Column  field="bairro.municipio.nomeDoMunicipio" header="Município" />   
+                        <Column  field="bairro.municipio.uf.nomeDaUf" header="Uf" />        
+                    </DataTable>
+                </div>
+
+        )
+    }
+
+    getRequestFuncionarios() {
+        axios
+            .get('http://localhost:8080/parkingBackend/rest/ws/getFuncionarios/')
+            .then(res =>
+                this.setState({ 
+                    funcionarios: res.data, 
+                    loading: false 
+                }),
+            );
+    }
+
+    async renderFuncionario(e){
+        console.log(e)
+        displayInput()
+        let funcionarioSelecionado = e
+        let dataDeNascimento = new Date(funcionarioSelecionado.dataDeNascimento);
+        let dataDeAdmissao = new Date(funcionarioSelecionado.dataDaAdmissao);
+        let eventBairroSelecionado
+        let eventMunicipioSelecionado
+        let evenUfSelecionada
+
+        if(funcionarioSelecionado.bairro != null){
+            eventBairroSelecionado = {
+                name: funcionarioSelecionado.bairro.nomeDoBairro,
+                code: funcionarioSelecionado.bairro.idBairro
+            }
+
+            evenUfSelecionada = {
+                name: funcionarioSelecionado.bairro.municipio.uf.nomeDaUf,
+                code: funcionarioSelecionado.bairro.municipio.uf.idUf
+            }
+    
+            eventMunicipioSelecionado = {
+                name: funcionarioSelecionado.bairro.municipio.nomeDoMunicipio,
+                code: funcionarioSelecionado.bairro.municipio.idMunicipio
+            }
+        }        
+        
+        let eventCargoSelecionado
+        if(funcionarioSelecionado.cargo != null){
+            eventCargoSelecionado = {
+                name: funcionarioSelecionado.cargo.nomeDoCargo,
+                code: funcionarioSelecionado.cargo.idCargo
+            }
+        }
+        let promise = new Promise((resolve) => {
+            resolve(
+                this.setState({ 
+                    selectedFuncionario: funcionarioSelecionado,
+                    nomeDoFuncionario: funcionarioSelecionado.nomeDoFuncionario,
+                    cpfDoFuncionario: funcionarioSelecionado.cpfDoFuncionario,
+                    rgDoFuncionario: funcionarioSelecionado.rgDoFuncionario,
+                    enderecoDoFuncionario: funcionarioSelecionado.enderecoDoFuncionario,
+                    sexoDoFuncionario: funcionarioSelecionado.sexoDoFuncionario,
+                    dataDeNascimento: dataDeNascimento.toLocaleDateString(),
+                    ufSelecionada: evenUfSelecionada,
+                    municipioSelecionado: eventMunicipioSelecionado,
+                    bairroSelecionado: eventBairroSelecionado,
+                    cargoSelecionado: eventCargoSelecionado,
+                    dataDaAdmissao: dataDeAdmissao.toLocaleDateString(),
+                    salarioBase: funcionarioSelecionado.salarioBase           
+                })
+            )
+        });
+        await promise;
+        
+        if(funcionarioSelecionado.bairro != null){
+            this.getRequestMunicipios()
+            this.getRequestBairros()
+        }
     }
 
     render() {
         return (
             <div>
-                <Header />
+                <Header/>
+                {this.renderLista()}
                 {this.renderInput()}
             </div>
         );
     }
 }
 
-export default FuncionarioInput;
+function displayInput(){
+    let input = document.getElementById('input')
+    input.style.display = 'block'
+    let lista = document.getElementById('lista')
+    lista.style.display = 'none'
+}
+
+function displayLista(){
+    let input = document.getElementById('input')
+    input.style.display = 'none'
+    let lista = document.getElementById('lista')
+    lista.style.display = 'block'
+}
+
+export default Funcionarios;
+

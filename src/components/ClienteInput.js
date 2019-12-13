@@ -49,8 +49,8 @@ class ClienteInput extends Component {
         if(this.state.bairroSelecionado != null){
             bairro = this.state.bairroSelecionado.code
         }
-         
-        axios.post('http://localhost:8080/estacionamento/rest/ws/createCliente',
+                 
+        axios.post('http://localhost:8080/parkingBackend/rest/ws/createCliente',
             {
                 "nomeDoCliente": this.state.nomeDoCliente,
                 "cpfDoCliente": this.state.cpfDoCliente,
@@ -82,6 +82,7 @@ class ClienteInput extends Component {
                     veiculos: [],
                 })
                 if(response.status === 200){
+                    alert(response.data);
                     window.location = '/'
                 }
                 
@@ -94,7 +95,7 @@ class ClienteInput extends Component {
 
     getRequestUfs() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getUfs/')
+            .get('http://localhost:8080/parkingBackend/rest/ws/getUfs/')
             .then(res =>
                 this.setState({
                     ufs: res.data,
@@ -121,7 +122,7 @@ class ClienteInput extends Component {
 
     getRequestMunicipios() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getMunicipiosPorUf/' + this.state.ufSelecionada.code)
+            .get('http://localhost:8080/parkingBackend/rest/ws/getMunicipiosPorUf/' + this.state.ufSelecionada.code)
             .then(res =>
                 this.setState({
                     municipios: res.data,
@@ -148,7 +149,7 @@ class ClienteInput extends Component {
 
     getRequestBairros() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getBairrosPorMunicipio/' + this.state.municipioSelecionado.code)
+            .get('http://localhost:8080/parkingBackend/rest/ws/getBairrosPorMunicipio/' + this.state.municipioSelecionado.code)
             .then(res =>
                 this.setState({
                     bairros: res.data,
@@ -181,7 +182,7 @@ class ClienteInput extends Component {
     }
 
     setRequestVeiculo(){
-        axios.post('http://localhost:8080/estacionamento/rest/ws/createVeiculo',
+        axios.post('http://localhost:8080/parkingBackend/rest/ws/createVeiculo',
         {
             "numeroDaPlaca": this.state.numeroDaPlaca,
             "corDoCarro": this.state.corDoCarro,
@@ -240,7 +241,7 @@ class ClienteInput extends Component {
     }
 
     setRequestEditarVeiculo(){
-        axios.post('http://localhost:8080/estacionamento/rest/ws/editarVeiculoPorId/',
+        axios.post('http://localhost:8080/parkingBackend/rest/ws/editarVeiculoPorId/',
         {   
             "idVeiculo": this.state.selectedVeiculo.idVeiculo,
             "numeroDaPlaca": this.state.numeroDaPlaca,
@@ -270,7 +271,7 @@ class ClienteInput extends Component {
     }
 
     removerVeiculoPorId(id){
-        axios.post('http://localhost:8080/estacionamento/rest/ws/removerVeiculoPorId/' 
+        axios.post('http://localhost:8080/parkingBackend/rest/ws/removerVeiculoPorId/' 
             + id)
         .then(
             alert("Veiculo removido com sucesso.")

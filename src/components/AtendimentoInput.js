@@ -56,7 +56,7 @@ class AtendimentoInput extends Component {
 
     getRequestClientes() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getClientes/')
+            .get('http://localhost:8080/parkingBackend/rest/ws/getClientes/')
             .then(res =>
                 this.setState({ 
                     clientes: res.data, 
@@ -67,7 +67,7 @@ class AtendimentoInput extends Component {
 
     getRequestVeiculosDoCliente() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getVeiculosDoCliente/' + this.state.cliente.idCliente)
+            .get('http://localhost:8080/parkingBackend/rest/ws/getVeiculosDoCliente/' + this.state.cliente.idCliente)
             .then(res =>
                 this.setState({ 
                     veiculos: res.data, 
@@ -84,7 +84,7 @@ class AtendimentoInput extends Component {
 
     getRequestTiposAtendimentos() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getTipoDeAtendimentos/')
+            .get('http://localhost:8080/parkingBackend/rest/ws/getTipoDeAtendimentos/')
             .then(res =>
                 this.setState({ 
                     tiposAtendimentos: res.data, 
@@ -150,7 +150,7 @@ class AtendimentoInput extends Component {
     
     getRequestFuncionarios() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getFuncionarios/')
+            .get('http://localhost:8080/parkingBackend/rest/ws/getFuncionarios/')
             .then(res =>
                 this.setState({ 
                     funcionarios: res.data, 
@@ -202,12 +202,14 @@ class AtendimentoInput extends Component {
         if(this.state.funcionario != null){
             funcionario = this.state.funcionario.code
         }
-        axios.post('http://localhost:8080/estacionamento/rest/ws/createAtendimento',
+
+        console.log(this.state.dataEntrada)
+        axios.post('http://localhost:8080/parkingBackend/rest/ws/createAtendimento',
         {
             "cliente": this.state.cliente.idCliente,
             "vaga": this.state.selectedVaga.idVaga,
-            "dataEntrada": this.formatarData(this.state.dataEntrada),
-            "dataSaida": this.formatarData(this.state.dataSaida),
+            "dataEntrada": this.state.dataEntrada,
+            "dataSaida": this.state.dataSaida,
             "veiculo": veiculo,
             "tipoDeAtendimento": tipoAtendimento,
             "valorBase": this.state.selectedVaga.valorBase,
@@ -230,6 +232,7 @@ class AtendimentoInput extends Component {
             })            
             this.setRequestAlterarStatusVaga('2')
             if(response.status === 200){
+                alert(response.data);
                 window.location = '/'
             }                   
         })       
@@ -240,7 +243,7 @@ class AtendimentoInput extends Component {
     }
 
     setRequestAlterarStatusVaga(status){
-        axios.post('http://localhost:8080/estacionamento/rest/ws/alterarStatusVaga',
+        axios.post('http://localhost:8080/parkingBackend/rest/ws/alterarStatusVaga',
         {
             "idVaga": this.state.selectedVaga.idVaga,
             "status": status
@@ -295,7 +298,7 @@ class AtendimentoInput extends Component {
 
     getRequestVagas() {
         axios
-            .get('http://localhost:8080/estacionamento/rest/ws/getVagasDisponiveis/')
+            .get('http://localhost:8080/parkingBackend/rest/ws/getVagasDisponiveis/')
             .then(res =>
                 this.setState({ 
                     vagas: res.data, 

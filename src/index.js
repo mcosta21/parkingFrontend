@@ -10,6 +10,15 @@ import Vagas from './components/Vagas';
 import Clientes from './components/Clientes';
 import ClienteInput from './components/ClienteInput';
 import FuncionarioInput from './components/FuncionarioInput';
+import Funcionarios from './components/Funcionarios';
+import BairroInput from './components/BairroInput';
+import Bairros from './components/Bairros';
+import MunicipioInput from './components/MunicipioInput';
+import Municipios from './components/Municipios';
+import UfInput from './components/UfInput';
+import Ufs from './components/Ufs';
+import CargoInput from './components/CargoInput';
+import Cargos from './components/Cargos';
 
 ReactDOM.render(
 
@@ -22,7 +31,15 @@ ReactDOM.render(
             <Route path="/clientes" component={Clientes} />
             <Route path="/cliente" component={ClienteInput} />
             <Route path="/funcionario" component={FuncionarioInput} />
-
+            <Route path="/funcionarios" component={Funcionarios} />
+            <Route path="/bairro" component={BairroInput} />
+            <Route path="/bairros" component={Bairros} />
+            <Route path="/municipio" component={MunicipioInput} />
+            <Route path="/municipios" component={Municipios} />
+            <Route path="/uf" component={UfInput} />
+            <Route path="/ufs" component={Ufs} />
+            <Route path="/cargo" component={CargoInput} />
+            <Route path="/cargos" component={Cargos} />
         </Switch>
     </ BrowserRouter>
     
