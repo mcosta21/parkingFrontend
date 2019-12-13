@@ -38,7 +38,11 @@ class Atendimento extends Component {
             dataEntrada: null,
             dataSaida: null,
             porcentagem: 0,
-            idAtendimento: null
+            idAtendimento: null,
+            visibleFecharAtendimento: false,
+            observacao: null,
+            formasDePagamento: [],
+            formaPagamentoSelecionado: null,
         };
     }
 
@@ -47,9 +51,14 @@ class Atendimento extends Component {
         this.getRequestClientes()
         this.getRequestTiposAtendimentos()
         this.getRequestFuncionarios()
+        this.getRequestFormasDePagamento()
     } 
 
     setRequest(){
+        if(this.state.selectedAtendimento.statusAtendimento === true){
+            alert("Atendimento fechado.")
+            return
+        }
         let veiculo
         if(this.state.veiculo != null){
             veiculo = this.state.veiculo.code
@@ -116,7 +125,7 @@ class Atendimento extends Component {
     }
 
     getStatusAtendimento(){
-        return (this.state.dataSaida === null ? 'Aberto' : 'Fechado')
+        return (this.state.statusAtendimento === true ? 'Aberto' : 'Fechado')
     }
 
     getStatusAtendimento2(data){
@@ -249,7 +258,7 @@ class Atendimento extends Component {
             )
         });
         await promise;
-
+        console.log(this.state.dataSaida)
     }
     
     getRequestFuncionarios() {
@@ -298,7 +307,79 @@ class Atendimento extends Component {
             );
     }
 
+    fecharAtendimento(){
+        if(this.state.selectedAtendimento.statusAtendimento === true){
+            alert("Atendimento fechado.")
+            return
+        }
+        this.setRequest()
+        let formaPagamento
+        if(this.state.formaPagamentoSelecionado != null){
+            formaPagamento = this.state.formaPagamentoSelecionado.code
+        }
+        axios.post('http://localhost:8080/parkingBackend/rest/ws/createFluxoCaixa',
+        {
+            "idAtendimento": this.state.idAtendimento,
+            "valorTotal": this.state.valorTotal,
+            "observacao": "Lançamento gerado do atendimento " + this.state.idAtendimento + ". Observação: " + this.state.observacao,
+            "idFormaPagamento": formaPagamento,
+            "dataTransacao": this.state.dataEntrada,
+            "transacao": "ENTRADA"
+        })
+        .then(response => {     
+            console.log(response);
+            this.setState=({
+                    cliente: '', 
+                    vagas: [], 
+                    selectedCliente: '', 
+                    selectedVaga: '', 
+                    dataEntrada: null,
+                    dataSaida: null,
+                    tipoAtendimentoSelecionado: null,
+                    valorBase: 0,
+                    valorTotal: 0,
+                    funcionario: null
+            })            
+            this.setRequestAlterarStatusVaga('2')
+            if(response.status === 200){
+                alert(response.data);
+                window.location = '/'
+            }                   
+        })       
+        .catch(error => {
+            console.log(error.response)
+            alert(error.response.data);
+        })
+    }
+
+    getRequestFormasDePagamento() {
+        axios
+            .get('http://localhost:8080/parkingBackend/rest/ws/getFormasDePagamento/')
+            .then(res =>
+                this.setState({
+                    formasDePagamento: res.data,
+                    loading: false
+                }),
+            );
+    }
+
+    getFormasDePagamento() {
+        return this.state.formasDePagamento.map((valor) => (
+            { name: valor.nomeDaFormaPagamento, code: valor.idFormaPagamento }
+        ))
+    }
+
+    async onFormaDePagamentoChange(e) {
+        let promise = new Promise((resolve) => {
+            resolve(
+                this.setState({ formaPagamentoSelecionado: e.value }),
+            )
+        });
+        await promise;
+    }
+
     renderInput(){
+        const formas = this.getFormasDePagamento();
         const tipos = this.getTiposDeAtendimentos();
         const funcionarios = this.getFuncionarios();
         return (
@@ -381,7 +462,6 @@ class Atendimento extends Component {
                     mask="99/99/9999 99:99:99"
                     value={this.state.dataSaida || ''} 
                     className="input"
-                    readOnly
                     onChange={(e)=>{this.getValorTotal(e)}}/>
 
                 <h3>Horas de Atendimento</h3>
@@ -414,9 +494,62 @@ class Atendimento extends Component {
                 
                 <Button className="btn_confirmar" label="Salvar" onClick={this.setRequest.bind(this)} />
                 <Button className="btn_confirmar" label="Cancelar" onClick={()=>{this.voltarParaLista()}} />
+
+                <Dialog 
+                    header="Fechar Atendimento" 
+                    visible={this.state.visibleFecharAtendimento} 
+                    style={{width: '50vw'}}
+                    id="dialogFecharAtendimento"
+                    modal={true} 
+                    onHide={() => this.setState({visibleFecharAtendimento: false})}>
                 
+                <h3>Data da Transação</h3>
+                <InputText 
+                    value={this.state.dataEntrada || ''} 
+                    className="input2"
+                    readOnly
+                    onChange={(e) => this.setState({dataEntrada: e.target.value})}/>
+
+                <h3>Valor Total *</h3>
+                <InputText
+                    value={this.state.valorTotal || ''}
+                    className="input2"
+                    onChange={(e) => this.setState({ valorTotal: e.target.value })} />
+                
+                <h3>Forma de Pagamento *</h3>
+                <Dropdown optionLabel="name"
+                    value={this.state.formaPagamentoSelecionado}
+                    options={formas}
+                    onChange={(e) => this.setState({ formaPagamentoSelecionado: e.target.value })} placeholder="Selecione a Forma de Pagamento" />
+                
+                <h3>Transação</h3>
+                <InputText 
+                    value={"Entrada"} 
+                    className="input2"
+                    readOnly/>
+
+                <h3>Observação *</h3>
+                <InputText
+                    value={this.state.observacao || ''}
+                    className="input2"
+                    onChange={(e) => this.setState({ observacao: e.target.value })} />
+
+                    <div style={{display: 'inline-flex'}}>
+                        <Button label="Confirmar" id="confirmarVeiculo" className="btn_confirmar2" onClick={() => this.fecharAtendimento()}/>
+                        <Button label="Cancelar" className="btn_confirmar2" onClick={() => this.setState({visibleFecharAtendimento: false})}/>
+                    </div>
+                </Dialog>
+
+                <Button className="btn_confirmar" label="Fechar Atendimento" onClick={()=>this.mostrarFecharAtendimento()} />
+              
             </div>
         )
+    }
+
+    mostrarFecharAtendimento(){
+        this.setState({
+            visibleFecharAtendimento: true,
+        })
     }
 
     limparData(data){
@@ -445,12 +578,12 @@ class Atendimento extends Component {
     }
 
     mostrarStatusTabela(rowData, column) {
-        let dataSaida = rowData['dataSaida']
-        if(dataSaida == null){
-           return <span >Aberto</span>;
+        let statusAtendimento = rowData['statusAtendimento']
+        if(statusAtendimento === true){
+           return <span>Fechado</span>;
         }
         else{
-           return <span >Fechado</span>; 
+           return <span >Aberto</span>; 
         }
     }
     
@@ -490,6 +623,7 @@ class Atendimento extends Component {
             resolve(
                 this.setState({ 
                     idAtendimento: atendimentoSelecionado.idAtendimento,
+                    selectedAtendimento: atendimentoSelecionado,
                     selectedVaga: atendimentoSelecionado.vaga,
                     cliente: atendimentoSelecionado.cliente,
                     veiculo: eventVeiculoSelecionada,
@@ -535,7 +669,7 @@ class Atendimento extends Component {
                     rows={20}
                     onRowDoubleClick={(e)=>{this.renderAtendimento(e.data)}}>
                     
-                    <Column field="dataSaida" body={this.mostrarStatusTabela} header="Status" /> 
+                    <Column field="statusAtendimento" body={this.mostrarStatusTabela} header="Status" /> 
                     <Column field="idAtendimento" header="N° Atendimento" />                        
                     <Column field="cliente.nomeDoCliente" header="Cliente" />
                     <Column field="vaga.nomeDaVaga" header="Vaga" />

@@ -137,7 +137,7 @@ export default function Panel() {
               </Grid>
 
               <Grid item xs={6} sm={3}>
-                  <Link to="/vagasDisponiveis">
+                  <Link to="/fluxoCaixa">
                     <Button className={classes.btn} label={" "}>
                       <Icon className={classes.icon}>attach_money</Icon>
                       <Paper className={classes.titleBtn}>FLUXO DE CAIXA</Paper>
@@ -213,7 +213,7 @@ export default function Panel() {
               <Grid item xs={6} sm={3}>
                   <Link to="/funcionarios">
                     <Button className={classes.btn} label={" "}>
-                      <Icon className={classes.icon}>face</Icon>
+                      <Icon className={classes.icon}>perm_contact_calendar</Icon>
                       <Paper className={classes.titleBtn}>FUNCIONÁRIOS</Paper>
                     </Button>
                   </Link>               
@@ -222,7 +222,7 @@ export default function Panel() {
               <Grid item xs={6} sm={3}>
                   <Link to="/bairros">
                     <Button className={classes.btn} label={" "}>
-                      <Icon className={classes.icon}>face</Icon>
+                      <Icon className={classes.icon}>store_mall_directory</Icon>
                       <Paper className={classes.titleBtn}>BAIRROS</Paper>
                     </Button>
                   </Link>               
@@ -231,7 +231,7 @@ export default function Panel() {
               <Grid item xs={6} sm={3}>
                   <Link to="/municipios">
                     <Button className={classes.btn} label={" "}>
-                      <Icon className={classes.icon}>face</Icon>
+                      <Icon className={classes.icon}>home_work</Icon>
                       <Paper className={classes.titleBtn}>MUNICÍPIOS</Paper>
                     </Button>
                   </Link>               
@@ -240,7 +240,7 @@ export default function Panel() {
               <Grid item xs={6} sm={3}>
                   <Link to="/ufs">
                     <Button className={classes.btn} label={" "}>
-                      <Icon className={classes.icon}>face</Icon>
+                      <Icon className={classes.icon}>map</Icon>
                       <Paper className={classes.titleBtn}>UFS</Paper>
                     </Button>
                   </Link>               
@@ -249,7 +249,7 @@ export default function Panel() {
               <Grid item xs={6} sm={3}>
                   <Link to="/cargos">
                     <Button className={classes.btn} label={" "}>
-                      <Icon className={classes.icon}>face</Icon>
+                      <Icon className={classes.icon}>work_outline</Icon>
                       <Paper className={classes.titleBtn}>CARGOS</Paper>
                     </Button>
                   </Link>               

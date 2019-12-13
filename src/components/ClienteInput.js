@@ -407,23 +407,28 @@ class ClienteInput extends Component {
                     style={{width: '50vw'}}
                     modal={true} 
                     onHide={() => this.setState({visibleVeiculos: false})}>
-
+                    
+                    
                     <h3>Placa do Veículo</h3>
                     <InputMask
                         mask="***-9*99"
                         value={this.state.numeroDaPlaca || ''}
-                        className="input"
+                        className="input2"
                         onChange={(e) => this.setState({ numeroDaPlaca: e.target.value })} />
-
+                    
                     <h3>Cor do Veículo</h3>
                     <InputText
                         value={this.state.corDoCarro || ''}
-                        className="input"
+                        className="input2"
                         onChange={(e) => this.setState({ corDoCarro: e.target.value })} />
 
-                    <Button label="Confirmar" id="confirmarVeiculo" className="btn_confirmar2" onClick={() => this.setRequestVeiculo()}/>
-                    <Button label="Confirmar2" id="editarVeiculo" className="btn_confirmar2" onClick={() => this.setRequestEditarVeiculo()}/>
-                    <Button label="Cancelar" className="btn_confirmar2" onClick={() => this.setState({visibleVeiculos: false})}/>
+                    <div style={{display: 'inline-flex'}}>
+                        <Button label="Confirmar" id="confirmarVeiculo" className="btn_confirmar2" onClick={() => this.setRequestVeiculo()}/> 
+                        <Button label="Confirmar2" id="editarVeiculo" className="btn_confirmar2" onClick={() => this.setRequestEditarVeiculo()}/> 
+                        <Button label="Cancelar" className="btn_confirmar2" onClick={() => this.setState({visibleVeiculos: false})}/>
+                    </div>   
+                    
+                    
                 </Dialog>
                 
                 <DataTable 

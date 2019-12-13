@@ -203,7 +203,6 @@ class AtendimentoInput extends Component {
             funcionario = this.state.funcionario.code
         }
 
-        console.log(this.state.dataEntrada)
         axios.post('http://localhost:8080/parkingBackend/rest/ws/createAtendimento',
         {
             "cliente": this.state.cliente.idCliente,
@@ -368,8 +367,8 @@ class AtendimentoInput extends Component {
                             <Column field="idCliente" header="ID" />                        
                             <Column field="nomeDoCliente" header="Nome" />
                         </DataTable>
-                        <Button label="Confirmar" onClick={() => this.confirmarSelectedCliente()}/>
-                        <Button label="Cancelar" onClick={() => this.setState({visibleClientes: false})}/>
+                        <Button label="Confirmar" className="btn_confirmar2" onClick={() => this.confirmarSelectedCliente()}/>
+                        <Button label="Cancelar" className="btn_confirmar2" onClick={() => this.setState({visibleClientes: false})}/>
                 </Dialog>
 
                 <h3>Veiculo *</h3>
@@ -435,7 +434,7 @@ class AtendimentoInput extends Component {
                 
                 <Button className="btn_confirmar" label="Salvar" onClick={this.setRequest.bind(this)} />
                 <Button className="btn_confirmar" label="Cancelar" onClick={()=>{window.location = '/'}} />
-                
+               
             </div>
         )
     }

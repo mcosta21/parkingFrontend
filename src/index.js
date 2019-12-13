@@ -19,6 +19,7 @@ import UfInput from './components/UfInput';
 import Ufs from './components/Ufs';
 import CargoInput from './components/CargoInput';
 import Cargos from './components/Cargos';
+import FluxoCaixaInput from './components/FluxoCaixaInput';
 
 ReactDOM.render(
 
@@ -40,6 +41,7 @@ ReactDOM.render(
             <Route path="/ufs" component={Ufs} />
             <Route path="/cargo" component={CargoInput} />
             <Route path="/cargos" component={Cargos} />
+            <Route path="/fluxoCaixa" component={FluxoCaixaInput} />
         </Switch>
     </ BrowserRouter>
     

@@ -9,12 +9,29 @@
   padding-right: 15%;
 }
 
+#dialogFecharAtendimento .p-dialog-content{
+  overflow-y: scroll;
+  height: 50vw !Important 
+}
+
 .input{
   width: 100%;
   height: 60px;
   border: 2px solid #2b3553 !important;
   background: transparent !important;
   color: #dbd8e3 !important;
+  padding: 15px !important;
+  font-size: 17px !important;
+  margin-bottom: 20px;
+  border-radius: 10px !important;
+}
+
+.input2{
+  width: 100%;
+  height: 50px;
+  border: 2px solid #dbd8e3!important;
+  background: transparent !important;
+  color: #2b3553 !important;
   padding: 15px !important;
   font-size: 17px !important;
   margin-bottom: 20px;

@@ -5,9 +5,7 @@ import '../App.css';
 import {DataTable} from 'primereact/datatable';
 import {Column} from 'primereact/column';
 import { Button } from 'primereact/button';
-import { InputMask } from 'primereact/inputmask';
 import { Dropdown } from 'primereact/dropdown';
-import {Dialog} from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 
 class Bairros extends Component {

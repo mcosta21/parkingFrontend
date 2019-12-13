@@ -200,13 +200,13 @@ class FuncionarioInput extends Component {
                     </div>
                 </div>
 
-                <h3>Nome</h3>
+                <h3>Nome *</h3>
                 <InputText
                     value={this.state.nomeDoFuncionario || ''}
                     className="input"
                     onChange={(e) => this.setState({ nomeDoFuncionario: e.target.value })} />
 
-                <h3>CPF</h3>
+                <h3>CPF *</h3>
                 <InputMask
                     mask="999.999.999-99"
                     className="input"
@@ -226,26 +226,26 @@ class FuncionarioInput extends Component {
                     className="input"
                     onChange={(e) => this.setState({ enderecoDoFuncionario: e.target.value })} />
 
-                <h3>Sexo</h3>
+                <h3>Sexo *</h3>
                 <Dropdown value={this.state.sexoDoFuncionario}
                     options={sexo}
                     onChange={(e) => { this.setState({ sexoDoFuncionario: e.target.value }) }} placeholder="Selecione o Sexo" />
 
-                <h3>Data de Nascimento</h3>
+                <h3>Data de Nascimento *</h3>
                 <InputMask
                     mask="99/99/9999"
                     className="input"
                     value={this.state.dataDeNascimento}
                     onChange={(e) => this.setState({ dataDeNascimento: e.target.value })} />
 
-                <h3>Data da Admissão</h3>
+                <h3>Data da Admissão *</h3>
                 <InputMask
                     mask="99/99/9999"
                     className="input"
                     value={this.state.dataDaAdmissao}
                     onChange={(e) => this.setState({ dataDaAdmissao: e.target.value })} />
 
-                <h3>Cargo</h3>
+                <h3>Cargo *</h3>
                 <Dropdown optionLabel="name"
                     value={this.state.cargoSelecionado}
                     options={cargos}
